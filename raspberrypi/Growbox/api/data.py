@@ -1,28 +1,61 @@
 from flask import Flask
 import json
+import threading
+import serial
 
 app = Flask(__name__)
+obs = []
 
+
+class ReadSerialThread(threading.Thread):
+    def __init__(self, path):
+        threading.Thread.__init__(self)
+
+        self.ser = serial.Serial(path, 9600, timeout=1)
+        self.ser.flush()
+
+        self.header = ['temp', 'humid', 'light']
+        self.id = 1
+
+    def run(self):
+        while True:
+            if self.ser.in_waiting > 0:
+                item = {}
+                row = self.ser.readline().decode('utf-8').rstrip().split(',')
+
+                item['id'] = self.id
+                self.id += 1
+
+                for i in range(len(self.header)):
+                    item[self.header[i]] = row[i]
+
+                obs.append(item)
+
+ReadSerialThread('/dev/ttyACM0').start()
 
 @app.route('/')
 def getData():
-    with open('data.csv', 'r') as f:
-        data = f.read().splitlines()
+    return json.dumps(obs)
 
-    header = data[0].split(',')
-    rows = data[1::]
+@app.route('/<int:id>')
+def getDataId(id):
+    result = None
 
-    items = []
-    for row in rows:
-        item = {}
-        row = row.split(',')
+    for item in obs:
+        if item['id'] == id:
+            result = item
 
-        for i in range(len(header)):
-            item[header[i]] = row[i]
+    return json.dumps(result)
 
-        items.append(item)
+@app.route('/<int:idFrom>/<int:idTo>')
+def getDataFromTo(idFrom, idTo):
+    result = []
 
-    return json.dumps(items)
+    for item in obs:
+        if (item['id'] >= idFrom) and (item['id'] <= idTo):
+            result.append(item)
+
+    return json.dumps(result)
 
 if __name__ == '__main__':
     app.run()
