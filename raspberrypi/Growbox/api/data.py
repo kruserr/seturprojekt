@@ -1,9 +1,11 @@
-from flask import Flask
+import flask
 import json
 import threading
 import serial
+import gpiozero
 
-app = Flask(__name__)
+app = flask.Flask(__name__)
+pump = gpiozero.LED(26)
 obs = []
 
 
@@ -33,11 +35,11 @@ class ReadSerialThread(threading.Thread):
 
 ReadSerialThread('/dev/ttyACM0').start()
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def getData():
     return json.dumps(obs)
 
-@app.route('/<int:id>')
+@app.route('/<int:id>', methods=['GET'])
 def getDataId(id):
     result = None
 
@@ -47,7 +49,7 @@ def getDataId(id):
 
     return json.dumps(result)
 
-@app.route('/<int:idFrom>/<int:idTo>')
+@app.route('/<int:idFrom>/<int:idTo>', methods=['GET'])
 def getDataFromTo(idFrom, idTo):
     result = []
 
@@ -56,6 +58,19 @@ def getDataFromTo(idFrom, idTo):
             result.append(item)
 
     return json.dumps(result)
+
+@app.route('/pump', methods=['POST'])
+def setPumpState():
+    data = flask.request.get_json(force=True)
+
+    if int(data['state']) == 1:
+        pump.on()
+    elif int(data['state']) == 0:
+        pump.off()
+    else:
+        return json.dumps({'status': -1})
+
+    return json.dumps({'status': f"{data['state']}"})
 
 if __name__ == '__main__':
     app.run()
