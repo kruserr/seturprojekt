@@ -5,11 +5,6 @@ led = LED(26)
 
 while(True):
 	led.off()
-	time.sleep(0.5)
+	time.sleep(3)
 	led.on()
-	time.sleep(0.2)
-	led.off()
-	time.sleep(0.30)
-	led.on()
-	time.sleep(0.25)
-	
+	time.sleep(3)
