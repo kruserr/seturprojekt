@@ -61,16 +61,23 @@ def getDataFromTo(idFrom, idTo):
 
 @app.route('/pump', methods=['POST'])
 def setPumpState():
-    data = flask.request.get_json(force=True)
+    statusCode = 0
+    try:
+        data = flask.request.get_json(force=True)
 
-    if int(data['state']) == 1:
-        pump.on()
-    elif int(data['state']) == 0:
-        pump.off()
-    else:
-        return json.dumps({'status': -1})
+        if int(data['state']) == 1:
+            pump.on()
+        elif int(data['state']) == 0:
+            pump.off()
+        else:
+            raise ValueError
 
-    return json.dumps({'status': f"{data['state']}"})
+        return json.dumps({'status': f"{data['state']}"})
+    except ValueError:
+        statusCode = -1
+    except:
+        statusCode = -2
+    return json.dumps({'status': statusCode})
 
 if __name__ == '__main__':
     app.run()
