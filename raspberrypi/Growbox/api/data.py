@@ -3,11 +3,17 @@ import json
 import threading
 import serial
 import gpiozero
+import time
+import atexit
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.cron import CronTrigger
+
 
 app = flask.Flask(__name__)
 pump = gpiozero.LED(26)
 obs = []
-
+scheduler = BackgroundScheduler(daemon=True)
+scheduler.start()
 
 class ReadSerialThread(threading.Thread):
     def __init__(self, path):
@@ -78,6 +84,52 @@ def setPumpState():
     except:
         statusCode = -2
     return json.dumps({'status': statusCode})
+
+def runPump(pumpInterval):
+    pump.on()
+    time.sleep(pumpInterval)
+    pump.off()
+
+@app.route('/cron/add', methods=['POST'])
+def addJob():
+    statusCode = 0
+    try:
+        data = flask.request.get_json(force=True)
+        pumpInterval = int(data['pumpInterval'])
+        crontab = str(data['crontab'])
+
+        if pumpInterval > 0:
+            scheduler.add_job(
+                lambda : runPump(pumpInterval),
+                CronTrigger.from_crontab(crontab),
+                id = '1'
+            )
+            print(f"job started")
+        else:
+            raise ValueError
+
+        return json.dumps({'status': 0})
+    except ValueError:
+        statusCode = -1
+    except:
+        statusCode = -2
+    return json.dumps({'status': statusCode})
+
+@app.route('/cron/remove', methods=['POST'])
+def removeJob():
+    statusCode = 0
+    try:
+        scheduler.remove_job('1')
+        print(f"job stopped")
+
+        return json.dumps({'status': 0})
+    except ValueError:
+        statusCode = -1
+    except:
+        statusCode = -2
+    return json.dumps({'status': statusCode})
+
+atexit.register(lambda: scheduler.shutdown())
 
 if __name__ == '__main__':
     app.run()

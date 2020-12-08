@@ -1,12 +1,12 @@
 fetch = require('/usr/local/lib/node_modules/node-fetch')
 const sleep = ms => new Promise(res => setTimeout(res, ms));
 
-let state = false;
-let time = false;
+let state = 1
+let time = 2000
 if (process.argv[2])
-  state = process.argv[2];
+  state = process.argv[2]
 if (process.argv[3])
-  time = process.argv[3];
+  time = process.argv[3]
 
 function test(param)
 {
@@ -23,7 +23,7 @@ function test(param)
       {
         console.log(param, j.status);
       }
-    });
+    })
 }
 
 async function main()
@@ -40,4 +40,4 @@ async function main()
       test(0);
   }
 }
-main();
+main()
