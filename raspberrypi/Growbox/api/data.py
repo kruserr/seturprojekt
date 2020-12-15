@@ -7,6 +7,7 @@ import time
 import atexit
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
+import asyncio
 
 
 app = flask.Flask(__name__)
@@ -85,9 +86,10 @@ def setPumpState():
         statusCode = -2
     return json.dumps({'status': statusCode})
 
-def runPump(pumpInterval):
+async def runPump(pumpInterval):
     pump.on()
-    time.sleep(pumpInterval)
+    #time.sleep(pumpInterval)
+    await asyncio.sleep(pumpInterval)
     pump.off()
 
 @app.route('/cron/add', methods=['POST'])
