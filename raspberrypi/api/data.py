@@ -1,17 +1,35 @@
 import flask
 import json
+
 import threading
 import serial
+
 import gpiozero
+
 import time
+import datetime
+
 import atexit
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 
 
 app = flask.Flask(__name__)
-pump = gpiozero.LED(26)
+
+try:
+    pump = gpiozero.LED(26)
+except gpiozero.exc.BadPinFactory:
+    class Pump():
+        def on(self):
+            print(f"{datetime.datetime.utcnow()} - pump on")
+
+        def off(self):
+            print(f"{datetime.datetime.utcnow()} - pump off")
+
+    pump = Pump()
+
 obs = []
+
 scheduler = BackgroundScheduler(daemon=True)
 scheduler.add_jobstore('sqlalchemy', url='sqlite:///scheduler.db')
 scheduler.start()
@@ -40,7 +58,10 @@ class ReadSerialThread(threading.Thread):
 
                 obs.append(item)
 
-ReadSerialThread('/dev/ttyACM0').start()
+try:
+    ReadSerialThread('/dev/ttyACM0').start()
+except serial.serialutil.SerialException:
+    pass
 
 @app.route('/', methods=['GET'])
 def getData():
@@ -86,7 +107,7 @@ def setPumpState():
         statusCode = -2
     return json.dumps({'status': statusCode})
 
-async def runPump(pumpInterval):
+def runPump(pumpInterval):
     pump.on()
     time.sleep(pumpInterval)
     pump.off()
@@ -94,27 +115,35 @@ async def runPump(pumpInterval):
 @app.route('/cron/add', methods=['POST'])
 def addJob():
     statusCode = 0
-    try:
-        data = flask.request.get_json(force=True)
-        pumpInterval = int(data['pumpInterval'])
-        crontab = str(data['crontab'])
+    # try:
+    data = flask.request.get_json(force=True)
+    pumpInterval = int(data['pumpInterval'])
+    crontab = str(data['crontab'])
 
-        if pumpInterval > 0:
-            scheduler.add_job(
-                lambda : runPump(pumpInterval),
-                CronTrigger.from_crontab(crontab),
-                id = '1'
-            )
-            print(f"job started")
-        else:
-            raise ValueError
+    print(pumpInterval, crontab)
 
-        return json.dumps({'status': 0})
-    except ValueError:
-        statusCode = -1
-    except:
-        statusCode = -2
-    return json.dumps({'status': statusCode})
+    if pumpInterval > 0:
+        # scheduler.add_job(
+        #     lambda: runPump(pumpInterval),
+        #     CronTrigger.from_crontab(crontab),
+        #     id = '1'
+        # )
+        scheduler.add_job(
+            func = runPump,
+            args = [pumpInterval],
+            trigger = CronTrigger.from_crontab(crontab),
+            id = '1'
+        )
+        print('job started')
+    else:
+        raise ValueError
+
+    return json.dumps({'status': 0})
+    # except ValueError:
+    #     statusCode = -1
+    # except:
+    #     statusCode = -2
+    # return json.dumps({'status': statusCode})
 
 @app.route('/cron/remove', methods=['POST'])
 def removeJob():
@@ -130,7 +159,6 @@ def removeJob():
         statusCode = -2
     return json.dumps({'status': statusCode})
 
-atexit.register(lambda: scheduler.shutdown())
-
 if __name__ == '__main__':
+    atexit.register(lambda: scheduler.shutdown())
     app.run()
