@@ -7,13 +7,13 @@ import time
 import atexit
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
-import asyncio
 
 
 app = flask.Flask(__name__)
 pump = gpiozero.LED(26)
 obs = []
 scheduler = BackgroundScheduler(daemon=True)
+scheduler.add_jobstore('sqlalchemy', url='sqlite:///scheduler.db')
 scheduler.start()
 
 class ReadSerialThread(threading.Thread):
@@ -88,8 +88,7 @@ def setPumpState():
 
 async def runPump(pumpInterval):
     pump.on()
-    #time.sleep(pumpInterval)
-    await asyncio.sleep(pumpInterval)
+    time.sleep(pumpInterval)
     pump.off()
 
 @app.route('/cron/add', methods=['POST'])
