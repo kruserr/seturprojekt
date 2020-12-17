@@ -88,41 +88,50 @@ class ReadSerialThread(threading.Thread):
     def __init__(self, path):
         threading.Thread.__init__(self)
 
-        self.ser = serial.Serial(path, 9600, timeout=1)
-        self.ser.flush()
+        self.path = path
+
+        self.loadSerial()
 
         self.header = ['temp', 'humid', 'light']
         self.id = 1
 
+    def loadSerial(self):
+        try:
+            self.ser = serial.Serial(self.path, 9600, timeout=1)
+            self.ser.flush()
+        except serial.serialutil.SerialException:
+            pass
+
     def run(self):
         while True:
-            if self.ser.in_waiting > 0:
-                item = {}
-                row = self.ser.readline().decode('utf-8').rstrip().split(',')
+            try:
+                if self.ser.in_waiting > 0:
+                    item = {}
+                    row = self.ser.readline().decode('utf-8').rstrip().split(',')
 
-                item['id'] = self.id
-                self.id += 1
+                    item['id'] = self.id
+                    self.id += 1
 
-                for i in range(len(self.header)):
-                    item[self.header[i]] = row[i]
+                    for i in range(len(self.header)):
+                        item[self.header[i]] = row[i]
 
-                obs.append(item)
+                    obs.append(item)
+            except (OSError, AttributeError):
+                self.loadSerial()
+                time.sleep(0.1)
 
-try:
-    ReadSerialThread('/dev/ttyACM0').start()
-except serial.serialutil.SerialException:
-    pass
+ReadSerialThread('/dev/ttyACM0').start()
 
 @app.route('/', methods=['GET'])
 def getData():
     return json.dumps(obs)
 
 @app.route('/<int:id>', methods=['GET'])
-def getDataId(id):
+def getDataId(itemId):
     result = None
 
     for item in obs:
-        if item['id'] == id:
+        if item['id'] == itemId:
             result = item
 
     return json.dumps(result)
@@ -140,6 +149,7 @@ def getDataFromTo(idFrom, idTo):
 @app.route('/pump', methods=['POST'])
 def setPumpState():
     statusCode = 0
+
     try:
         data = flask.request.get_json(force=True)
 
@@ -150,16 +160,18 @@ def setPumpState():
         else:
             raise ValueError
 
-        return json.dumps({'status': f"{data['state']}"})
+        statusCode = f"{data['state']}"
     except ValueError:
         statusCode = -1
     except:
         statusCode = -2
+
     return json.dumps({'status': statusCode})
 
 @app.route('/cron/add', methods=['POST'])
 def addJob():
     statusCode = 0
+
     try:
         data = flask.request.get_json(force=True)
         pumpInterval = float(data['pumpInterval'])
@@ -168,12 +180,11 @@ def addJob():
         print(f"{datetime.datetime.utcnow()} - job request {pumpInterval} {crontab}")
         
         job.addJob(pumpInterval, crontab)
-
-        return json.dumps({'status': 0})
     except ValueError:
         statusCode = -1
     except:
         statusCode = -2
+
     return json.dumps({'status': statusCode})
 
 if __name__ == '__main__':

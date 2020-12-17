@@ -10,3 +10,7 @@
 - Temperature Sensor (digital)
 - Humidity Sensor
 - Relay
+
+
+# Notes:
+- When relay opens temp/humid sensor reads error perhaps from noise

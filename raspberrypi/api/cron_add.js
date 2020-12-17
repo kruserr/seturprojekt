@@ -5,8 +5,7 @@ let pumpInterval = 5;
 if (process.argv[2])
   pumpInterval = process.argv[2];
 
-//let crontab = '0 2 * * 2';
-let crontab = '* * * * *';
+let crontab = '0 16 */14 * *';
 if (process.argv[3])
   crontab = process.argv[3];
 
