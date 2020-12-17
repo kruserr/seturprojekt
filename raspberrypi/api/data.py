@@ -115,35 +115,30 @@ def runPump(pumpInterval):
 @app.route('/cron/add', methods=['POST'])
 def addJob():
     statusCode = 0
-    # try:
-    data = flask.request.get_json(force=True)
-    pumpInterval = int(data['pumpInterval'])
-    crontab = str(data['crontab'])
+    try:
+        data = flask.request.get_json(force=True)
+        pumpInterval = int(data['pumpInterval'])
+        crontab = str(data['crontab'])
 
-    print(pumpInterval, crontab)
+        print(pumpInterval, crontab)
 
-    if pumpInterval > 0:
-        # scheduler.add_job(
-        #     lambda: runPump(pumpInterval),
-        #     CronTrigger.from_crontab(crontab),
-        #     id = '1'
-        # )
-        scheduler.add_job(
-            func = runPump,
-            args = [pumpInterval],
-            trigger = CronTrigger.from_crontab(crontab),
-            id = '1'
-        )
-        print('job started')
-    else:
-        raise ValueError
+        if pumpInterval > 0:
+            scheduler.add_job(
+                func = runPump,
+                args = [pumpInterval],
+                trigger = CronTrigger.from_crontab(crontab),
+                id = '1'
+            )
+            print('job started')
+        else:
+            raise ValueError
 
-    return json.dumps({'status': 0})
-    # except ValueError:
-    #     statusCode = -1
-    # except:
-    #     statusCode = -2
-    # return json.dumps({'status': statusCode})
+        return json.dumps({'status': 0})
+    except ValueError:
+        statusCode = -1
+    except:
+        statusCode = -2
+    return json.dumps({'status': statusCode})
 
 @app.route('/cron/remove', methods=['POST'])
 def removeJob():
