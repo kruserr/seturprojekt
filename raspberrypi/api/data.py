@@ -63,24 +63,24 @@ class Job:
             f.write(str(self.jobId))
 
     def addJob(self, pumpInterval, crontab):
-        if pumpInterval > 0:
-            try:
-                self.scheduler.remove_job(str(self.jobId))
-                print(f"{datetime.datetime.utcnow()} - job {self.jobId} stopped")
-            except JobLookupError:
-                pass
-            
-            self.setJobId()
-
-            self.scheduler.add_job(
-                func = runPump,
-                args = [pumpInterval],
-                trigger = CronTrigger.from_crontab(crontab),
-                id = str(self.jobId)
-            )
-            print(f"{datetime.datetime.utcnow()} - job {self.jobId} started")
-        else:
+        if pumpInterval < 0.001:
             raise ValueError
+
+        try:
+            self.scheduler.remove_job(str(self.jobId))
+            print(f"{datetime.datetime.utcnow()} - job {self.jobId} stopped")
+        except JobLookupError:
+            pass
+        
+        self.setJobId()
+
+        self.scheduler.add_job(
+            func = runPump,
+            args = [pumpInterval],
+            trigger = CronTrigger.from_crontab(crontab),
+            id = str(self.jobId)
+        )
+        print(f"{datetime.datetime.utcnow()} - job {self.jobId} started")
 
 job = Job()
 
@@ -160,21 +160,21 @@ def setPumpState():
 @app.route('/cron/add', methods=['POST'])
 def addJob():
     statusCode = 0
-    # try:
-    data = flask.request.get_json(force=True)
-    pumpInterval = int(data['pumpInterval'])
-    crontab = str(data['crontab'])
+    try:
+        data = flask.request.get_json(force=True)
+        pumpInterval = float(data['pumpInterval'])
+        crontab = str(data['crontab'])
 
-    print(f"{datetime.datetime.utcnow()} - job request {pumpInterval} {crontab}")
-    
-    job.addJob(pumpInterval, crontab)
+        print(f"{datetime.datetime.utcnow()} - job request {pumpInterval} {crontab}")
+        
+        job.addJob(pumpInterval, crontab)
 
-    return json.dumps({'status': 0})
-    # except ValueError:
-    #     statusCode = -1
-    # except:
-    #     statusCode = -2
-    # return json.dumps({'status': statusCode})
+        return json.dumps({'status': 0})
+    except ValueError:
+        statusCode = -1
+    except:
+        statusCode = -2
+    return json.dumps({'status': statusCode})
 
 if __name__ == '__main__':
     app.run()
