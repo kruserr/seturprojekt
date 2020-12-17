@@ -1,5 +1,5 @@
 fetch = require('/usr/local/lib/node_modules/node-fetch')
-const sleep = ms => new Promise(res => setTimeout(res, ms));
+
 
 let pumpInterval = 5;
 if (process.argv[2])
@@ -27,9 +27,4 @@ function test(pumpInterval, crontab)
       }
     });
 }
-
-async function main()
-{
-  test(pumpInterval, crontab);
-}
-main();
+test(pumpInterval, crontab)

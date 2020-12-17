@@ -12,6 +12,7 @@ import datetime
 import atexit
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
+from apscheduler.jobstores.base import JobLookupError
 
 
 app = flask.Flask(__name__)
@@ -21,26 +22,54 @@ try:
 except gpiozero.exc.BadPinFactory:
     class Pump():
         def on(self):
-            print(f"{datetime.datetime.utcnow()} - pump on")
+            pass
 
         def off(self):
-            print(f"{datetime.datetime.utcnow()} - pump off")
+            pass
 
     pump = Pump()
 
 obs = []
 
+def runPump(pumpInterval):
+    pump.on()
+    print(f"{datetime.datetime.utcnow()} - pump on")
+    
+    time.sleep(pumpInterval)
+    
+    pump.off()
+    print(f"{datetime.datetime.utcnow()} - pump off")
+
 class Job:
     def __init__(self):
         self.obs = []
-        self.jobId = 1
+        self.jobId = 0
         self.scheduler = BackgroundScheduler(daemon=True)
         self.scheduler.add_jobstore('sqlalchemy', url='sqlite:///scheduler.db')
         self.scheduler.start()
+        atexit.register(lambda: self.scheduler.shutdown())
 
-    def addJob(self):
+    def addJob(self, pumpInterval, crontab):
+        if pumpInterval > 0:
+            try:
+                self.scheduler.remove_job(str(self.jobId))
+                print(f"{datetime.datetime.utcnow()} - job {self.jobId} stopped")
+            except JobLookupError:
+                pass
+            
+            self.jobId += 1
 
+            self.scheduler.add_job(
+                func = runPump,
+                args = [pumpInterval],
+                trigger = CronTrigger.from_crontab(crontab),
+                id = str(self.jobId)
+            )
+            print(f"{datetime.datetime.utcnow()} - job {self.jobId} started")
+        else:
+            raise ValueError
 
+job = Job()
 
 class ReadSerialThread(threading.Thread):
     def __init__(self, path):
@@ -115,11 +144,6 @@ def setPumpState():
         statusCode = -2
     return json.dumps({'status': statusCode})
 
-def runPump(pumpInterval):
-    pump.on()
-    time.sleep(pumpInterval)
-    pump.off()
-
 @app.route('/cron/add', methods=['POST'])
 def addJob():
     statusCode = 0
@@ -129,23 +153,8 @@ def addJob():
     crontab = str(data['crontab'])
 
     print(f"{datetime.datetime.utcnow()} - job request {pumpInterval} {crontab}")
-
-    if pumpInterval > 0:
-        if jobId > 1:
-            scheduler.remove_job(jobId)
-            print(f"{datetime.datetime.utcnow()} - job {jobId} stopped")
-
-        scheduler.add_job(
-            func = runPump,
-            args = [pumpInterval],
-            trigger = CronTrigger.from_crontab(crontab),
-            id = jobId
-        )
-        print(f"{datetime.datetime.utcnow()} - job {jobId} started")
-        
-        jobId += 1
-    else:
-        raise ValueError
+    
+    job.addJob(pumpInterval, crontab)
 
     return json.dumps({'status': 0})
     # except ValueError:
@@ -155,5 +164,4 @@ def addJob():
     # return json.dumps({'status': statusCode})
 
 if __name__ == '__main__':
-    atexit.register(lambda: scheduler.shutdown())
     app.run()
