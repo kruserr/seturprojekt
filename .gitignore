@@ -1,1 +1,23 @@
-raspberrypi/Growbox/api/scheduler.db
+# Editors
+.vs/*
+.vscode/*
+.atom/*
+.idea/*
+
+# Build and Binary
+Build/*
+build/*
+bin/*
+bin-int/*
+
+# Temp files
+*__pycache__*
+*.pyc
+*.~lock*
+*venv
+
+# Sec
+sec/*
+
+# Custom
+raspberrypi/api/scheduler.db

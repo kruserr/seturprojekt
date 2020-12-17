@@ -1,11 +1,12 @@
 fetch = require('/usr/local/lib/node_modules/node-fetch')
 const sleep = ms => new Promise(res => setTimeout(res, ms));
 
-let pumpInterval = 2000;
+let pumpInterval = 5;
 if (process.argv[2])
   pumpInterval = process.argv[2];
 
-let crontab = '0 2 * * 2';
+//let crontab = '0 2 * * 2';
+let crontab = '* * * * *';
 if (process.argv[3])
   crontab = process.argv[3];
 
