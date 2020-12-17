@@ -21,3 +21,4 @@ sec/*
 
 # Custom
 raspberrypi/api/scheduler.db
+raspberrypi/api/jobId.dat

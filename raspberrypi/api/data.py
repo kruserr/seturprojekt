@@ -43,11 +43,24 @@ def runPump(pumpInterval):
 class Job:
     def __init__(self):
         self.obs = []
+
         self.jobId = 0
+        try:
+            with open('jobId.dat', 'r') as f:
+                self.jobId = int(f.read())
+        except FileNotFoundError:
+            pass
+
         self.scheduler = BackgroundScheduler(daemon=True)
         self.scheduler.add_jobstore('sqlalchemy', url='sqlite:///scheduler.db')
         self.scheduler.start()
         atexit.register(lambda: self.scheduler.shutdown())
+
+    def setJobId(self):
+        self.jobId += 1
+
+        with open('jobId.dat', 'w') as f:
+            f.write(str(self.jobId))
 
     def addJob(self, pumpInterval, crontab):
         if pumpInterval > 0:
@@ -57,7 +70,7 @@ class Job:
             except JobLookupError:
                 pass
             
-            self.jobId += 1
+            self.setJobId()
 
             self.scheduler.add_job(
                 func = runPump,
