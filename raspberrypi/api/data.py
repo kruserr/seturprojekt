@@ -170,7 +170,7 @@ def setPumpState():
 
     return json.dumps({'status': statusCode})
 
-@app.route('/cron/add', methods=['POST'])
+@app.route('/cron', methods=['POST'])
 def addJob():
     statusCode = 0
 
