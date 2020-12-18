@@ -112,6 +112,8 @@ class ReadSerialThread(threading.Thread):
                     item['id'] = self.id
                     self.id += 1
 
+                    item['timestamp'] = datetime.datetime.utcnow().isoformat()
+
                     for i in range(len(self.header)):
                         item[self.header[i]] = row[i]
 
@@ -126,7 +128,7 @@ ReadSerialThread('/dev/ttyACM0').start()
 
 @app.route('/', methods=['GET'])
 def getData():
-    return json.dumps(obs)
+    return json.dumps(obs, indent = 2, default = str)
 
 @app.route('/<int:id>', methods=['GET'])
 def getDataId(itemId):
@@ -136,7 +138,7 @@ def getDataId(itemId):
         if item['id'] == itemId:
             result = item
 
-    return json.dumps(result)
+    return json.dumps(result, indent = 2, default = str)
 
 @app.route('/<int:idFrom>/<int:idTo>', methods=['GET'])
 def getDataFromTo(idFrom, idTo):
@@ -146,7 +148,7 @@ def getDataFromTo(idFrom, idTo):
         if (item['id'] >= idFrom) and (item['id'] <= idTo):
             result.append(item)
 
-    return json.dumps(result)
+    return json.dumps(result, indent = 2, default = str)
 
 @app.route('/pump', methods=['POST'])
 def setPumpState():
@@ -168,7 +170,7 @@ def setPumpState():
     except:
         statusCode = -2
 
-    return json.dumps({'status': statusCode})
+    return json.dumps({'status': statusCode}, indent = 2, default = str)
 
 @app.route('/cron', methods=['POST'])
 def addJob():
@@ -187,7 +189,7 @@ def addJob():
     except:
         statusCode = -2
 
-    return json.dumps({'status': statusCode})
+    return json.dumps({'status': statusCode}, indent = 2, default = str)
 
 if __name__ == '__main__':
     app.run()
