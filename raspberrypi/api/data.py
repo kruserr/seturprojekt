@@ -97,7 +97,7 @@ class ReadSerialThread(threading.Thread):
 
     def loadSerial(self):
         try:
-            self.ser = serial.Serial(self.path, 9600, timeout=1)
+            self.ser = serial.Serial(self.path, 9600, timeout = 1)
             self.ser.flush()
         except serial.serialutil.SerialException:
             pass
@@ -116,9 +116,11 @@ class ReadSerialThread(threading.Thread):
                         item[self.header[i]] = row[i]
 
                     obs.append(item)
-            except (OSError, AttributeError):
+            except AttributeError:
                 self.loadSerial()
-                time.sleep(0.1)
+            except OSError:
+                pass
+            time.sleep(0.1)
 
 ReadSerialThread('/dev/ttyACM0').start()
 
