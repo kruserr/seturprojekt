@@ -89,6 +89,7 @@ class ReadSerialThread(threading.Thread):
         threading.Thread.__init__(self)
 
         self.path = path
+        self.ser = None
 
         self.loadSerial()
 
@@ -102,26 +103,37 @@ class ReadSerialThread(threading.Thread):
         except serial.serialutil.SerialException:
             pass
 
+    def innerLoop(self):
+        if self.ser is None:
+            self.loadSerial()
+            return
+        
+        if not self.ser.is_open:
+            try:
+                self.ser.open()
+            except serial.serialutil.SerialException:
+                pass
+        
+        try:
+            if (self.ser.is_open) and (self.ser.in_waiting > 0):
+                item = {}
+                row = self.ser.readline().decode('utf-8').rstrip().split(',')
+
+                item['id'] = self.id
+                self.id += 1
+
+                item['timestamp'] = datetime.datetime.utcnow().isoformat()
+
+                for i in range(len(self.header)):
+                    item[self.header[i]] = row[i]
+
+                obs.append(item)
+        except OSError:
+            self.ser.close()
+
     def run(self):
         while True:
-            try:
-                if self.ser.in_waiting > 0:
-                    item = {}
-                    row = self.ser.readline().decode('utf-8').rstrip().split(',')
-
-                    item['id'] = self.id
-                    self.id += 1
-
-                    item['timestamp'] = datetime.datetime.utcnow().isoformat()
-
-                    for i in range(len(self.header)):
-                        item[self.header[i]] = row[i]
-
-                    obs.append(item)
-            except AttributeError:
-                self.loadSerial()
-            except OSError:
-                pass
+            self.innerLoop()
             time.sleep(0.1)
 
 ReadSerialThread('/dev/ttyACM0').start()
