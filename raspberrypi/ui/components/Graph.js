@@ -1,5 +1,5 @@
 import React from 'react';
-import {Line} from 'react-chartjs-2';
+import { Line } from 'react-chartjs-2';
 
 
 export default class Graph extends React.Component
@@ -15,8 +15,8 @@ export default class Graph extends React.Component
 
   componentDidMount()
   {
-    let increment = () => {
-      fetch('http://localhost:3000/api/increment')
+    let getNewestObs = () => {
+      fetch('http://localhost:3000/api/getNewestObs')
         .then(j => j.json())
         .then(newData => {
           let data = this.state.data;
@@ -25,7 +25,7 @@ export default class Graph extends React.Component
         });
     }
 
-    setInterval(increment, 2000);
+    setInterval(getNewestObs, 2000);
   }
 
   render()
@@ -56,9 +56,9 @@ export default class Graph extends React.Component
         yAxes: [
           {
             ticks: {
-                suggestedMax: 2400,
-                suggestedMin: 2200,
-                stepSize: 10,
+                suggestedMax: 24,
+                suggestedMin: 22,
+                stepSize: 1,
                 maxTicksLimit: 10
             }
           }
