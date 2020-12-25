@@ -142,7 +142,7 @@ ReadSerialThread('/dev/ttyACM0').start()
 def getData():
     return json.dumps(obs, indent = 2, default = str)
 
-@app.route('/<int:id>', methods=['GET'])
+@app.route('/<int:itemId>', methods=['GET'])
 def getDataId(itemId):
     result = None
 
