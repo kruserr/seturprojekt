@@ -1,5 +1,6 @@
 import React from 'react';
 import { Line } from 'react-chartjs-2';
+import styles from '../styles/LineGraph.module.css';
 
 
 export default class Graph extends React.Component
@@ -9,10 +10,22 @@ export default class Graph extends React.Component
     let label = [];
     let data = [];
 
-    for (let item of this.props.data)
+    const now = new Date();
+
+    for (let i = 6; i >= 0; i--)
     {
-      label.push(item.timestamp);
-      data.push(item[this.props.dataKey]);
+      let hourData = [];
+
+      for (let item of this.props.data)
+      {
+        if ((now - new Date(item.timestamp)) > i*60*60*1000)
+        {
+          hourData.push(item[this.props.dataKey]);
+        }
+      }
+
+      label.push(new Date(now - new Date(i*60*60*1000)));
+      data.push((hourData.reduce((a, b) => a + b, 0) / hourData.length).toFixed(2));
     }
 
     let lineData = {
@@ -21,43 +34,69 @@ export default class Graph extends React.Component
         {
           label: this.props.text,
           fill: false,
+          pointHitRadius: 5,
           borderColor: this.props.color,
-          data: data
+          backgroundColor: this.props.color,
+          data: data,
         }
       ]
     };
 
     let lineOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      legend: {
+        position: 'top',
+        labels: {
+          fontColor: 'white'
+        },
+      },
       scales: {
+        xAxes: [
+          {
+            type: 'time',
+            ticks: {
+              fontColor: 'white',
+              stepSize: 1,
+              maxTicksLimit: 6,
+              autoSkip: false,
+              maxRotation: 0,
+              minRotation: 0,
+            },
+            gridLines: {
+              display: true,
+              color: 'rgba(255,255,255,0.12)'
+            },
+          }
+        ],
         yAxes: [
           {
             ticks: {
-                suggestedMax: this.props.dataMax,
-                suggestedMin: this.props.dataMin,
-                stepSize: 1,
-                maxTicksLimit: 10
-            }
+              fontColor: 'white',
+              suggestedMax: this.props.dataMax,
+              suggestedMin: this.props.dataMin,
+              stepSize: 1,
+              maxTicksLimit: 10,
+              autoSkip: false,
+              maxRotation: 0,
+              minRotation: 0,
+            },
+            gridLines: {
+              display: true,
+              color: 'rgba(255,255,255,0.12)'
+            },
           }
         ],
-        xAxes: [
-          {
-            ticks: {
-                maxTicksLimit: 1
-            }
-          }
-        ]
       }
     }
 
     return (
-      <>
+      <div className={styles.container}>
         <Line
           data={lineData}
           options={lineOptions}
-          width={400}
-          height={400}
         />
-      </>
+      </div>
     );
   }
 }

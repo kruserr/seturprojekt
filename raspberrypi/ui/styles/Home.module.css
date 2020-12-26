@@ -71,13 +71,12 @@
     Bitstream Vera Sans Mono, Courier New, monospace;
 }
 
-.grid {
+.grid
+{
   display: flex;
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  max-width: 800px;
-  margin-top: 3rem;
 }
 
 .card {
@@ -114,8 +113,10 @@
   height: 1em;
 }
 
-@media (max-width: 600px) {
-  .grid {
+@media (max-width: 600px)
+{
+  .grid
+  {
     width: 100%;
     flex-direction: column;
   }

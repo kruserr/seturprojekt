@@ -4,6 +4,14 @@ import styles from '../styles/Home.module.css';
 import LineGraph from '../components/LineGraph';
 
 
+export async function getServerSideProps()
+{
+  const res = await fetch('http://localhost:3000/api/obs/lastDay');
+  const data = await res.json();
+
+  return { props: { data } }
+}
+
 export default class Home extends React.Component
 {
   constructor(props)
@@ -11,14 +19,14 @@ export default class Home extends React.Component
     super(props);
 
     this.state = {
-      'data': []
+      'data': props.data
     };
   }
 
   componentDidMount()
   {
-    let getNewestObs = () => {
-      fetch('http://localhost:3000/api/getNewestObs')
+    let newest = () => {
+      fetch('http://localhost:3000/api/obs/newest')
         .then(j => j.json())
         .then(newData => {
           let data = this.state.data;
@@ -27,19 +35,19 @@ export default class Home extends React.Component
         });
     }
 
-    setInterval(getNewestObs, 2000);
+    setInterval(newest, 2000);
   }
 
   render()
   {
     return (
-      <div className={styles.container}>
+      <div style={{background: '#181818', minHeight: '100vh'}}>
         <Head>
           <title>Create Next App</title>
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <main className={styles.main}>
+        <div className={styles.grid}>
           <LineGraph
             data={this.state.data}
             dataKey={'temp'}
@@ -56,7 +64,7 @@ export default class Home extends React.Component
             text={'Humidity'}
             color={'rgba(192,192,75,0.65)'}
           />
-        </main>
+        </div>
       </div>
     );
   }

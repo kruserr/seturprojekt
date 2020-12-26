@@ -1,0 +1,13 @@
+.container
+{
+  height: 300px;
+  margin-top: 60px;
+}
+
+@media (min-width: 680px)
+{
+  .container
+  {
+    height: 400px;
+  }
+}
