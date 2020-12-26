@@ -4,10 +4,12 @@
   margin-top: 60px;
 }
 
-@media (min-width: 680px)
+@media (min-width: 800px)
 {
   .container
   {
     height: 400px;
+    margin-left: 30px;
+    margin-right: 30px;
   }
 }
