@@ -1,6 +1,7 @@
 import React from 'react';
-import Head from 'next/head';
 import styles from '../styles/Home.module.css';
+
+import Head from 'next/head';
 import LineGraph from '../components/LineGraph';
 
 
@@ -9,7 +10,7 @@ export async function getServerSideProps()
   const res = await fetch('http://localhost:3000/api/obs/lastDay');
   const data = await res.json();
 
-  return { props: { data } }
+  return { props: { data } };
 }
 
 export default class Home extends React.Component

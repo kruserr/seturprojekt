@@ -1,6 +1,7 @@
 import React from 'react';
-import { Line } from 'react-chartjs-2';
 import styles from '../styles/LineGraph.module.css';
+
+import { Line } from 'react-chartjs-2';
 
 
 export default class Graph extends React.Component
