@@ -64,8 +64,8 @@ export default class Graph extends React.Component
               minRotation: 0,
             },
             gridLines: {
-              display: true,
-              color: 'rgba(255,255,255,0.12)'
+              color: 'rgba(255,255,255,0.12)',
+              zeroLineColor: 'rgba(255,255,255,0.12)',
             },
           }
         ],
@@ -77,13 +77,12 @@ export default class Graph extends React.Component
               suggestedMin: this.props.dataMin,
               stepSize: 1,
               maxTicksLimit: 10,
-              autoSkip: false,
               maxRotation: 0,
               minRotation: 0,
             },
             gridLines: {
-              display: true,
-              color: 'rgba(255,255,255,0.12)'
+              color: 'rgba(255,255,255,0.12)',
+              zeroLineColor: 'rgba(255,255,255,0.12)',
             },
           }
         ],
