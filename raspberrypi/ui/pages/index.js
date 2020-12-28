@@ -3,6 +3,7 @@ import styles from '../styles/Home.module.css';
 
 import Head from 'next/head';
 import LineGraph from '../components/LineGraph';
+import TextField from '../components/TextField';
 
 
 export async function getServerSideProps()
@@ -56,6 +57,7 @@ export default class Home extends React.Component
             dataMax={24}
             text={'Temperature'}
             color={'rgba(75,192,192,0.65)'}
+            textColor={'#FFF'}
           />
           <LineGraph
             data={this.state.data}
@@ -64,6 +66,21 @@ export default class Home extends React.Component
             dataMax={60}
             text={'Humidity'}
             color={'rgba(192,192,75,0.65)'}
+            textColor={'#FFF'}
+          />
+        </div>
+        <div className={styles.scheduleControls}>
+          <TextField
+            text={'Pump Schedule'}
+            dataKey={'pumpSchedule'}
+            placeHolder={'* * * * *'}
+            url={'http://localhost:3000/api/pumpSchedule'}
+          />
+          <TextField
+            text={'Light Schedule'}
+            dataKey={'lightSchedule'}
+            placeHolder={'* * * * *'}
+            url={'http://localhost:3000/api/lightSchedule'}
           />
         </div>
       </div>

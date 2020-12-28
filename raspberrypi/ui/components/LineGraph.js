@@ -49,7 +49,7 @@ export default class Graph extends React.Component
       legend: {
         position: 'top',
         labels: {
-          fontColor: 'white'
+          fontColor: this.props.textColor
         },
       },
       scales: {
@@ -57,7 +57,7 @@ export default class Graph extends React.Component
           {
             type: 'time',
             ticks: {
-              fontColor: 'white',
+              fontColor: 'inherit',
               stepSize: 1,
               maxTicksLimit: 6,
               maxRotation: 0,
@@ -72,7 +72,7 @@ export default class Graph extends React.Component
         yAxes: [
           {
             ticks: {
-              fontColor: 'white',
+              fontColor: 'inherit',
               suggestedMax: this.props.dataMax,
               suggestedMin: this.props.dataMin,
               stepSize: 0.5,
