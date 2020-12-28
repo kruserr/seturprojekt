@@ -8,15 +8,24 @@ export default class TextField extends React.Component
   {
     super(props);
 
+    this.event = {};
     this.element = React.createRef();
+  }
+
+  changeInputColor(color)
+  {
+    this.event.target.elements[0].style = `border-color: ${color}`;
+    new Promise(res => setTimeout(res, 2000))
+      .then(() => { this.event.target.elements[0].style = 'border-color: transperent'; });
   }
 
   componentDidMount()
   {
     this.element.current.onsubmit = (event) => {
-      event.preventDefault();
+      this.event = event;
+      this.event.preventDefault();
 
-      let input = event.target.elements[0].value;
+      let input = this.event.target.elements[0].value;
       
       // https://stackoverflow.com/a/17858524
       let re = /^(\*|([0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9])|\*\/([0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9])) (\*|([0-9]|1[0-9]|2[0-3])|\*\/([0-9]|1[0-9]|2[0-3])) (\*|([1-9]|1[0-9]|2[0-9]|3[0-1])|\*\/([1-9]|1[0-9]|2[0-9]|3[0-1])) (\*|([1-9]|1[0-2])|\*\/([1-9]|1[0-2])) (\*|([0-6])|\*\/([0-6]))$/;
@@ -24,9 +33,7 @@ export default class TextField extends React.Component
       // Test if crontab is valid
       if (!re.test(input))
       {
-        event.target.elements[0].style = 'border-color: red';
-        event.target.elements[0].blur();
-
+        this.changeInputColor('red');
         return;
       }
 
@@ -41,8 +48,7 @@ export default class TextField extends React.Component
         }
       );
 
-      event.target.elements[0].style = 'border-color: green';
-      event.target.elements[0].blur();
+      this.changeInputColor('green');
     }
   }
 
