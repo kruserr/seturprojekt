@@ -67,41 +67,51 @@ obs = [
     }
 ]
 
-def runPump(pumpInterval):
+pumpInterval = 2
+lightInterval = 21600
+
+def runPump(interval):
+    if interval < 0.001:
+        return
+    
     pump.on()
     print(f"{datetime.datetime.utcnow()} - pump on")
     
-    time.sleep(pumpInterval)
+    time.sleep(interval)
     
     pump.off()
     print(f"{datetime.datetime.utcnow()} - pump off")
 
 class Job:
-    def __init__(self):
+    def __init__(self, id = 'scheduler'):
+        self.id = id
         self.obs = []
+        self.interval = 0
 
         self.jobId = 0
         try:
-            with open('jobId.dat', 'r') as f:
+            with open(f"{self.id}_jobId.dat", 'r') as f:
                 self.jobId = int(f.read())
         except FileNotFoundError:
             pass
 
         self.scheduler = BackgroundScheduler(daemon=True)
-        self.scheduler.add_jobstore('sqlalchemy', url='sqlite:///scheduler.db')
+        self.scheduler.add_jobstore('sqlalchemy', url=f"sqlite:///{self.id}.db")
         self.scheduler.start()
         atexit.register(lambda: self.scheduler.shutdown())
+
+    def setInterval(self, interval):
+        if interval < 0.001:
+            raise ValueError
+        self.interval = interval
 
     def setJobId(self):
         self.jobId += 1
 
-        with open('jobId.dat', 'w') as f:
+        with open(f"{self.id}_jobId.dat", 'w') as f:
             f.write(str(self.jobId))
 
-    def addJob(self, pumpInterval, crontab):
-        if pumpInterval < 0.001:
-            raise ValueError
-
+    def addJob(self, crontab):
         try:
             self.scheduler.remove_job(str(self.jobId))
             print(f"{datetime.datetime.utcnow()} - job {self.jobId} stopped")
@@ -118,7 +128,9 @@ class Job:
         )
         print(f"{datetime.datetime.utcnow()} - job {self.jobId} started")
 
-job = Job()
+#job = Job()
+pumpScheduler = Job('pumpScheduler')
+lightScheduler = Job('lightScheduler')
 
 class ReadSerialThread(threading.Thread):
     def __init__(self, path):
@@ -232,7 +244,7 @@ def getObsNewest():
 
     return json.dumps(result, indent = 2, default = str)
 
-@app.route('/api/pump', methods=['POST'])
+@app.route('/api/pump/manual', methods=['POST'])
 def setPumpState():
     statusCode = 0
 
@@ -254,18 +266,61 @@ def setPumpState():
 
     return json.dumps({'status': statusCode}, indent = 2, default = str)
 
-@app.route('/api/cron', methods=['POST'])
+@app.route('/api/pump/schedule', methods=['POST'])
 def addJob():
     statusCode = 0
 
     try:
-        data = flask.request.get_json(force=True)
-        pumpInterval = float(data['pumpInterval'])
-        crontab = str(data['crontab'])
-
-        print(f"{datetime.datetime.utcnow()} - job request {pumpInterval} {crontab}")
+        data = str(flask.request.get_json(force=True)['data'])
         
-        job.addJob(pumpInterval, crontab)
+        job.addJob(data)
+    except ValueError:
+        statusCode = -1
+    except:
+        statusCode = -2
+
+    return json.dumps({'status': statusCode}, indent = 2, default = str)
+
+@app.route('/api/pump/interval', methods=['POST'])
+def setPumpInterval():
+    statusCode = 0
+
+    try:
+        data = float(flask.request.get_json(force=True)['data'])
+
+        global pumpInterval
+        pumpInterval = data
+    except ValueError:
+        statusCode = -1
+    except:
+        statusCode = -2
+
+    return json.dumps({'status': statusCode}, indent = 2, default = str)
+
+@app.route('/api/light/schedule', methods=['POST'])
+def addJob():
+    statusCode = 0
+
+    try:
+        data = str(flask.request.get_json(force=True)['data'])
+        
+        job.addJob(data)
+    except ValueError:
+        statusCode = -1
+    except:
+        statusCode = -2
+
+    return json.dumps({'status': statusCode}, indent = 2, default = str)
+
+@app.route('/api/light/interval', methods=['POST'])
+def setPumpInterval():
+    statusCode = 0
+
+    try:
+        data = float(flask.request.get_json(force=True)['data'])
+
+        global lightInterval
+        lightInterval = data
     except ValueError:
         statusCode = -1
     except:

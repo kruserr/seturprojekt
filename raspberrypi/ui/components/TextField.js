@@ -27,26 +27,22 @@ export default class TextField extends React.Component
 
       let input = this.event.target.elements[0].value;
       
-      // https://stackoverflow.com/a/17858524
-      let re = /^(\*|([0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9])|\*\/([0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9])) (\*|([0-9]|1[0-9]|2[0-3])|\*\/([0-9]|1[0-9]|2[0-3])) (\*|([1-9]|1[0-9]|2[0-9]|3[0-1])|\*\/([1-9]|1[0-9]|2[0-9]|3[0-1])) (\*|([1-9]|1[0-2])|\*\/([1-9]|1[0-2])) (\*|([0-6])|\*\/([0-6]))$/;
-
       // Test if crontab is valid
-      if (!re.test(input))
+      if ((this.props.re) && (!this.props.re.test(input)))
       {
         this.changeInputColor('red');
         return;
       }
 
-      let data = {};
-      data[this.props.dataKey] = input;
-
       fetch(
         this.props.url,
         {
           'method': 'POST',
-          'body': JSON.stringify(data)
+          'body': JSON.stringify({'data': input})
         }
-      );
+      )
+        .then(body => body.json())
+        .then(j => console.log(j));
 
       this.changeInputColor('green');
     }
