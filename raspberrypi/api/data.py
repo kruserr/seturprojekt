@@ -17,108 +17,82 @@ from apscheduler.jobstores.base import JobLookupError
 
 app = flask.Flask(__name__)
 
-try:
-    pump = gpiozero.LED(26)
-except gpiozero.exc.BadPinFactory:
-    class Pump():
-        def on(self):
-            pass
+# class Observations:
+#     instance = None
 
-        def off(self):
-            pass
+#     def __init__(self):
+#         self.obs = []
 
-    pump = Pump()
+#     @staticmethod
+#     def getInstance():
+#         if Observations.instance is None:
+#             Observations.instance = Observations()
+#         return Observations.instance
 
-obs = [
-    {
-        'id': 1,
-        'timestamp': (datetime.datetime.utcnow() - datetime.timedelta(hours=25)).isoformat(),
-        'temp': 23.0,
-        'humid': 55.0,
-        'light': 1
-    },
-    {
-        'id': 2,
-        'timestamp': (datetime.datetime.utcnow() - datetime.timedelta(hours=24)).isoformat(),
-        'temp': 23.1,
-        'humid': 55.0,
-        'light': 1
-    },
-    {
-        'id': 3,
-        'timestamp': (datetime.datetime.utcnow() - datetime.timedelta(hours=23, minutes=55)).isoformat(),
-        'temp': 23.5,
-        'humid': 55.0,
-        'light': 1
-    },
-    {
-        'id': 4,
-        'timestamp': (datetime.datetime.utcnow() - datetime.timedelta(hours=23, minutes=50)).isoformat(),
-        'temp': 23.4,
-        'humid': 55.0,
-        'light': 1
-    },
-    {
-        'id': 5,
-        'timestamp': (datetime.datetime.utcnow() - datetime.timedelta(hours=23, minutes=45)).isoformat(),
-        'temp': 23.6,
-        'humid': 55.0,
-        'light': 1
-    }
-]
+obs = []
 
-def runPump(pumpInterval):
-    pump.on()
-    print(f"{datetime.datetime.utcnow()} - pump on")
-    
-    time.sleep(pumpInterval)
-    
-    pump.off()
-    print(f"{datetime.datetime.utcnow()} - pump off")
+class Scheduler:
+    def __init__(self, pin):
+        try:
+            self.pin = gpiozero.LED(pin)
+        except gpiozero.exc.BadPinFactory:
+            class MochPin():
+                def on(self):
+                    pass
 
-class Job:
-    def __init__(self):
-        self.obs = []
+                def off(self):
+                    pass
+            self.pin = MochPin()
 
         self.jobId = 0
-        try:
-            with open('jobId.dat', 'r') as f:
-                self.jobId = int(f.read())
-        except FileNotFoundError:
-            pass
+        self.crontab = ''
+        self.interval = 0
 
         self.scheduler = BackgroundScheduler(daemon=True)
-        self.scheduler.add_jobstore('sqlalchemy', url='sqlite:///scheduler.db')
         self.scheduler.start()
         atexit.register(lambda: self.scheduler.shutdown())
 
-    def setJobId(self):
-        self.jobId += 1
-
-        with open('jobId.dat', 'w') as f:
-            f.write(str(self.jobId))
-
-    def addJob(self, pumpInterval, crontab):
-        if pumpInterval < 0.001:
+    def setInterval(self, interval):
+        if interval < 0.001:
             raise ValueError
+        self.interval = interval
 
+        print(f"{datetime.datetime.utcnow()} - job set interval {self.interval}")
+
+    def setCrontab(self, crontab):
+        self.crontab = crontab
+
+    def runPinInterval(self, pin, interval):
+        if interval < 0.001:
+            return
+        
+        pin.on()
+        print(f"{datetime.datetime.utcnow()} - pin on")
+        
+        time.sleep(interval)
+        
+        pin.off()
+        print(f"{datetime.datetime.utcnow()} - pin off")
+
+    def addJob(self):
         try:
             self.scheduler.remove_job(str(self.jobId))
             print(f"{datetime.datetime.utcnow()} - job {self.jobId} stopped")
         except JobLookupError:
             pass
         
-        self.setJobId()
+        self.jobId += 1
 
         self.scheduler.add_job(
-            func = runPump,
-            args = [pumpInterval],
-            trigger = CronTrigger.from_crontab(crontab),
+            func = self.runPinInterval,
+            args = [self.pin, self.interval],
+            trigger = CronTrigger.from_crontab(self.crontab),
             id = str(self.jobId)
         )
         print(f"{datetime.datetime.utcnow()} - job {self.jobId} started")
 
-job = Job()
+pumpScheduler = Scheduler(26)
+lightScheduler = Scheduler(19)
 
 class ReadSerialThread(threading.Thread):
     def __init__(self, path):
@@ -214,17 +188,6 @@ def getObsLastDay():
 def getObsNewest():
     result = None
 
-    # TEST
-    obs.append(
-        {
-            'id': 6,
-            'timestamp': datetime.datetime.utcnow().isoformat(),
-            'temp': 23.7,
-            'humid': 55.0,
-            'light': 1
-        }
-    )
-
     try:
         result = obs[-1]
     except IndexError:
@@ -232,21 +195,15 @@ def getObsNewest():
 
     return json.dumps(result, indent = 2, default = str)
 
-@app.route('/api/pump', methods=['POST'])
-def setPumpState():
+@app.route('/api/pump/schedule', methods=['POST'])
+def addPumpSchedule():
     statusCode = 0
 
     try:
-        data = flask.request.get_json(force=True)
-
-        if int(data['state']) == 1:
-            pump.on()
-        elif int(data['state']) == 0:
-            pump.off()
-        else:
-            raise ValueError
-
-        statusCode = f"{data['state']}"
+        data = str(flask.request.get_json(force=True)['data'])
+        
+        pumpScheduler.setCrontab(data)
+        pumpScheduler.addJob()
     except ValueError:
         statusCode = -1
     except:
@@ -254,18 +211,47 @@ def setPumpState():
 
     return json.dumps({'status': statusCode}, indent = 2, default = str)
 
-@app.route('/api/cron', methods=['POST'])
-def addJob():
+@app.route('/api/pump/interval', methods=['POST'])
+def setPumpInterval():
     statusCode = 0
 
     try:
-        data = flask.request.get_json(force=True)
-        pumpInterval = float(data['pumpInterval'])
-        crontab = str(data['crontab'])
+        data = float(flask.request.get_json(force=True)['data'])
 
-        print(f"{datetime.datetime.utcnow()} - job request {pumpInterval} {crontab}")
+        pumpScheduler.setInterval(data)
+        pumpScheduler.addJob()
+    except ValueError:
+        statusCode = -1
+    except:
+        statusCode = -2
+
+    return json.dumps({'status': statusCode}, indent = 2, default = str)
+
+@app.route('/api/light/schedule', methods=['POST'])
+def addLightSchedule():
+    statusCode = 0
+
+    try:
+        data = str(flask.request.get_json(force=True)['data'])
         
-        job.addJob(pumpInterval, crontab)
+        lightScheduler.setCrontab(data)
+        lightScheduler.addJob()
+    except ValueError:
+        statusCode = -1
+    except:
+        statusCode = -2
+
+    return json.dumps({'status': statusCode}, indent = 2, default = str)
+
+@app.route('/api/light/interval', methods=['POST'])
+def setLightInterval():
+    statusCode = 0
+
+    try:
+        data = float(flask.request.get_json(force=True)['data'])
+
+        lightScheduler.setInterval(data)
+        lightScheduler.addJob()
     except ValueError:
         statusCode = -1
     except:

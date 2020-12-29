@@ -21,10 +21,10 @@ export default class Graph extends React.Component
       {
         if ((now - new Date(item.timestamp)) > i*60*60*1000)
         {
-          hourData.push(item[this.props.dataKey]);
+          hourData.push(parseFloat(item[this.props.dataKey]));
         }
       }
-
+      
       label.push(new Date(now - new Date(i*60*60*1000)));
       data.push((hourData.reduce((a, b) => a + b, 0) / hourData.length).toFixed(2));
     }
