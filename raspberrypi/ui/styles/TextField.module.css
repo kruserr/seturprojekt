@@ -18,6 +18,8 @@
   border-color: transparent;
   border-style: solid;
   outline: none;
+  width: 120px;
+  text-align: center;
 }
 
 .input:focus
