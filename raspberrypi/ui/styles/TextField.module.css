@@ -1,0 +1,26 @@
+.form
+{
+  margin-top: 60px;
+  text-align: center;
+}
+
+.label
+{
+  display: block;
+  margin-bottom: 10px;
+}
+
+.input
+{
+  padding: 5px;
+  border-radius: 5px;
+  border-width: 3px;
+  border-color: transparent;
+  border-style: solid;
+  outline: none;
+}
+
+.input:focus
+{
+  border-color: #29b6f6;
+}

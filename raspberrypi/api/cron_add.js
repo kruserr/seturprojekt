@@ -12,7 +12,7 @@ if (process.argv[3])
 function test(pumpInterval, crontab)
 {
   fetch(
-    'http://localhost:5000/cron',
+    'http://localhost:5000/api/cron',
     {
       'method': 'POST',
       'body': JSON.stringify({'pumpInterval': pumpInterval, 'crontab': crontab})

@@ -11,7 +11,7 @@ if (process.argv[3])
 function test(param)
 {
   fetch(
-    'http://localhost:5000/pump',
+    'http://localhost:5000/api/pump',
     {
       'method': 'POST',
       'body': JSON.stringify({'state': param})

@@ -9,6 +9,7 @@ Build/*
 build/*
 bin/*
 bin-int/*
+*node_modules
 
 # Temp files
 *__pycache__*

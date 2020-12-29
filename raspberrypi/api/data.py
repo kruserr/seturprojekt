@@ -29,7 +29,43 @@ except gpiozero.exc.BadPinFactory:
 
     pump = Pump()
 
-obs = []
+obs = [
+    {
+        'id': 1,
+        'timestamp': (datetime.datetime.utcnow() - datetime.timedelta(hours=25)).isoformat(),
+        'temp': 23.0,
+        'humid': 55.0,
+        'light': 1
+    },
+    {
+        'id': 2,
+        'timestamp': (datetime.datetime.utcnow() - datetime.timedelta(hours=24)).isoformat(),
+        'temp': 23.1,
+        'humid': 55.0,
+        'light': 1
+    },
+    {
+        'id': 3,
+        'timestamp': (datetime.datetime.utcnow() - datetime.timedelta(hours=23, minutes=55)).isoformat(),
+        'temp': 23.5,
+        'humid': 55.0,
+        'light': 1
+    },
+    {
+        'id': 4,
+        'timestamp': (datetime.datetime.utcnow() - datetime.timedelta(hours=23, minutes=50)).isoformat(),
+        'temp': 23.4,
+        'humid': 55.0,
+        'light': 1
+    },
+    {
+        'id': 5,
+        'timestamp': (datetime.datetime.utcnow() - datetime.timedelta(hours=23, minutes=45)).isoformat(),
+        'temp': 23.6,
+        'humid': 55.0,
+        'light': 1
+    }
+]
 
 def runPump(pumpInterval):
     pump.on()
@@ -138,11 +174,11 @@ class ReadSerialThread(threading.Thread):
 
 ReadSerialThread('/dev/ttyACM0').start()
 
-@app.route('/', methods=['GET'])
+@app.route('/api/obs', methods=['GET'])
 def getData():
     return json.dumps(obs, indent = 2, default = str)
 
-@app.route('/<int:id>', methods=['GET'])
+@app.route('/api/obs/<int:itemId>', methods=['GET'])
 def getDataId(itemId):
     result = None
 
@@ -152,7 +188,7 @@ def getDataId(itemId):
 
     return json.dumps(result, indent = 2, default = str)
 
-@app.route('/<int:idFrom>/<int:idTo>', methods=['GET'])
+@app.route('/api/obs/<int:idFrom>/<int:idTo>', methods=['GET'])
 def getDataFromTo(idFrom, idTo):
     result = []
 
@@ -162,7 +198,41 @@ def getDataFromTo(idFrom, idTo):
 
     return json.dumps(result, indent = 2, default = str)
 
-@app.route('/pump', methods=['POST'])
+@app.route('/api/obs/lastDay')
+def getObsLastDay():
+    result = []
+
+    lastDay = datetime.datetime.utcnow() - datetime.timedelta(hours=24)
+
+    for item in obs:
+        if datetime.datetime.fromisoformat(item['timestamp']) > lastDay:
+            result.append(item)
+
+    return json.dumps(result, indent = 2, default = str)
+
+@app.route('/api/obs/newest')
+def getObsNewest():
+    result = None
+
+    # TEST
+    obs.append(
+        {
+            'id': 6,
+            'timestamp': datetime.datetime.utcnow().isoformat(),
+            'temp': 23.7,
+            'humid': 55.0,
+            'light': 1
+        }
+    )
+
+    try:
+        result = obs[-1]
+    except IndexError:
+        pass
+
+    return json.dumps(result, indent = 2, default = str)
+
+@app.route('/api/pump', methods=['POST'])
 def setPumpState():
     statusCode = 0
 
@@ -184,7 +254,7 @@ def setPumpState():
 
     return json.dumps({'status': statusCode}, indent = 2, default = str)
 
-@app.route('/cron', methods=['POST'])
+@app.route('/api/cron', methods=['POST'])
 def addJob():
     statusCode = 0
 
