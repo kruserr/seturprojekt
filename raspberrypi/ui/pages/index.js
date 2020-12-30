@@ -69,7 +69,8 @@ export default class Home extends React.Component
               
               this.setState({ data });
             });
-        });
+        })
+        .catch(() => { });
     }
 
     setInterval(newest, 10000);
