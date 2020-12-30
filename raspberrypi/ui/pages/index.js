@@ -21,23 +21,58 @@ export default class Home extends React.Component
     super(props);
 
     this.state = {
-      'data': props.data
+      'data': this.props.data
     };
+  }
+
+  getStartId()
+  {
+    if (this.state.data.length > 0)
+      return this.state.data[this.state.data.length - 1].id + 1;
+    return 1;
   }
 
   componentDidMount()
   {
     let newest = () => {
-      fetch('http://localhost:3000/api/obs/newest')
+      fetch(`http://localhost:3000/api/obs/newest`)
         .then(j => j.json())
-        .then(newData => {
-          let data = this.state.data;
-          data.push(newData);
-          this.setState({ data });
+        .then(newest => {
+          fetch(
+            'http://localhost:3000/api/obs/getRange',
+            {
+              'method': 'POST',
+              'body': JSON.stringify({'start': this.getStartId(), 'end': newest.id})
+            }
+          )
+            .then(j => j.json())
+            .then(missing => {
+              let data = this.state.data;
+
+              for (let item of missing)
+              {
+                let match = false;
+
+                for (let innerItem of data)
+                {
+                  if (item.id == innerItem.id)
+                  {
+                    match = true;
+                  }
+                }
+
+                if (!match)
+                {
+                  data.push(item);
+                }
+              }
+              
+              this.setState({ data });
+            });
         });
     }
 
-    setInterval(newest, 2000);
+    setInterval(newest, 4000);
   }
 
   render()
