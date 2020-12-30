@@ -90,7 +90,7 @@ export default class Home extends React.Component
             dataKey={'temp'}
             dataMin={16}
             dataMax={30}
-            text={'Temperature'}
+            text={'Temperature °C'}
             color={'rgba(75,192,192,0.65)'}
             textColor={'#FFF'}
           />
@@ -99,7 +99,7 @@ export default class Home extends React.Component
             dataKey={'humid'}
             dataMin={20}
             dataMax={80}
-            text={'Humidity'}
+            text={'Humidity %'}
             color={'rgba(192,192,75,0.65)'}
             textColor={'#FFF'}
           />

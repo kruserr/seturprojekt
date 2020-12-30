@@ -17,13 +17,13 @@ export default class Graph extends React.Component
 
     for (let item of this.props.data)
     {
-      if ((now - new Date(item['timestamp'])) <= 5*60*1000)
+      if ((now - new Date(item['timestamp'])) <= 5*60*1010)
       {
         minuteData.push(item);
       }
     }
 
-    for (let i = 1; i < 5*6; i++)
+    for (let i = 0; i <= 5*6; i++)
     {
       let sum = 0;
       let count = 0;
@@ -31,8 +31,8 @@ export default class Graph extends React.Component
       for (let item of minuteData)
       {
         if (
-          ((now - new Date(item['timestamp'])) >= (i-1)*10000) &&
-          ((now - new Date(item['timestamp'])) <= (i)*10000)
+          ((now - new Date(item['timestamp'])) >= (i)*10000) &&
+          ((now - new Date(item['timestamp'])) <= (i+1)*10000)
         )
         {
           let dataKey = parseFloat(item[this.props.dataKey]);
@@ -45,7 +45,7 @@ export default class Graph extends React.Component
         }
       }
       
-      data.push(sum / count);
+      data.push((sum / count).toFixed(2));
       label.push((i)*10000);
     }
 
@@ -56,8 +56,8 @@ export default class Graph extends React.Component
           label: this.props.text,
           fill: false,
           pointRadius: 0,
-          pointHoverRadius: 5,
-          pointHitRadius: 5,
+          pointHoverRadius: 0,
+          pointHitRadius: 7,
           borderColor: this.props.color,
           backgroundColor: this.props.color,
           data: data,
@@ -90,7 +90,7 @@ export default class Graph extends React.Component
               max: 5*60*1001,
               min: 0,
               stepSize: 0,
-              maxTicksLimit: -1,
+              maxTicksLimit: 1,
               maxRotation: 0,
               minRotation: 0,
               reverse: true,
@@ -98,11 +98,6 @@ export default class Graph extends React.Component
             gridLines: {
               color: 'rgba(255,255,255,0.12)',
               zeroLineColor: 'rgba(255,255,255,0.12)',
-            },
-            scaleLabel: {
-              fontColor: 'inherit',
-              display: true,
-              labelString: 'Last 5m'
             },
           }
         ],
