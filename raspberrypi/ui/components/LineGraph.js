@@ -99,6 +99,11 @@ export default class Graph extends React.Component
               color: 'rgba(255,255,255,0.12)',
               zeroLineColor: 'rgba(255,255,255,0.12)',
             },
+            scaleLabel: {
+              fontColor: 'inherit',
+              display: true,
+              labelString: 'Last 5 minutes'
+            },
           }
         ],
         yAxes: [
