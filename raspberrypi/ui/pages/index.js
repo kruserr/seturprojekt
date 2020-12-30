@@ -72,7 +72,7 @@ export default class Home extends React.Component
         });
     }
 
-    setInterval(newest, 4000);
+    setInterval(newest, 10000);
   }
 
   render()
@@ -88,8 +88,8 @@ export default class Home extends React.Component
           <LineGraph
             data={this.state.data}
             dataKey={'temp'}
-            dataMin={22}
-            dataMax={24}
+            dataMin={16}
+            dataMax={30}
             text={'Temperature'}
             color={'rgba(75,192,192,0.65)'}
             textColor={'#FFF'}
@@ -97,8 +97,8 @@ export default class Home extends React.Component
           <LineGraph
             data={this.state.data}
             dataKey={'humid'}
-            dataMin={40}
-            dataMax={60}
+            dataMin={20}
+            dataMax={80}
             text={'Humidity'}
             color={'rgba(192,192,75,0.65)'}
             textColor={'#FFF'}

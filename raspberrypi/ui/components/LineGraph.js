@@ -13,13 +13,40 @@ export default class Graph extends React.Component
 
     const now = new Date();
     
+    let minuteData = [];
+
     for (let item of this.props.data)
     {
       if ((now - new Date(item['timestamp'])) <= 5*60*1000)
       {
-        data.push(item[this.props.dataKey]);
-        label.push(now - new Date(item['timestamp']));
+        minuteData.push(item);
       }
+    }
+
+    for (let i = 1; i < 5*6; i++)
+    {
+      let sum = 0;
+      let count = 0;
+
+      for (let item of minuteData)
+      {
+        if (
+          ((now - new Date(item['timestamp'])) >= (i-1)*10000) &&
+          ((now - new Date(item['timestamp'])) <= (i)*10000)
+        )
+        {
+          let dataKey = parseFloat(item[this.props.dataKey]);
+
+          if (dataKey > -999.00)
+          {
+            sum += dataKey;
+            count += 1;
+          }
+        }
+      }
+      
+      data.push(sum / count);
+      label.push((i)*10000);
     }
 
     let lineData = {
@@ -28,6 +55,8 @@ export default class Graph extends React.Component
         {
           label: this.props.text,
           fill: false,
+          pointRadius: 0,
+          pointHoverRadius: 5,
           pointHitRadius: 5,
           borderColor: this.props.color,
           backgroundColor: this.props.color,
@@ -58,7 +87,7 @@ export default class Graph extends React.Component
             },
             ticks: {
               fontColor: 'inherit',
-              max: 5*60*1000,
+              max: 5*60*1001,
               min: 0,
               stepSize: 0,
               maxTicksLimit: -1,
