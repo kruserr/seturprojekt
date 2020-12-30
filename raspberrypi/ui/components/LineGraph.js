@@ -12,21 +12,14 @@ export default class Graph extends React.Component
     let data = [];
 
     const now = new Date();
-
-    for (let i = 6; i >= 0; i--)
+    
+    for (let item of this.props.data)
     {
-      let hourData = [];
-
-      for (let item of this.props.data)
+      if ((now - new Date(item['timestamp'])) <= 5*60*1000)
       {
-        if ((now - new Date(item.timestamp)) > i*60*60*1000)
-        {
-          hourData.push(parseFloat(item[this.props.dataKey]));
-        }
+        data.push(item[this.props.dataKey]);
+        label.push(now - new Date(item['timestamp']));
       }
-      
-      label.push(new Date(now - new Date(i*60*60*1000)));
-      data.push((hourData.reduce((a, b) => a + b, 0) / hourData.length).toFixed(2));
     }
 
     let lineData = {
@@ -56,16 +49,31 @@ export default class Graph extends React.Component
         xAxes: [
           {
             type: 'time',
+            time: {
+              unit: 'minute',
+              displayFormats: {
+                minute: 'm:ss'
+              },
+              tooltipFormat:'m:ss',
+            },
             ticks: {
               fontColor: 'inherit',
-              stepSize: 1,
-              maxTicksLimit: 6,
+              max: 5*60*1000,
+              min: 0,
+              stepSize: 0,
+              maxTicksLimit: -1,
               maxRotation: 0,
               minRotation: 0,
+              reverse: true,
             },
             gridLines: {
               color: 'rgba(255,255,255,0.12)',
               zeroLineColor: 'rgba(255,255,255,0.12)',
+            },
+            scaleLabel: {
+              fontColor: 'inherit',
+              display: true,
+              labelString: 'Last 5m'
             },
           }
         ],
