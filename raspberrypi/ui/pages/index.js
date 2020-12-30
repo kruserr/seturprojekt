@@ -21,23 +21,58 @@ export default class Home extends React.Component
     super(props);
 
     this.state = {
-      'data': props.data
+      'data': this.props.data
     };
+  }
+
+  getStartId()
+  {
+    if (this.state.data.length > 0)
+      return this.state.data[this.state.data.length - 1].id + 1;
+    return 1;
   }
 
   componentDidMount()
   {
     let newest = () => {
-      fetch('http://localhost:3000/api/obs/newest')
+      fetch(`http://localhost:3000/api/obs/newest`)
         .then(j => j.json())
-        .then(newData => {
-          let data = this.state.data;
-          data.push(newData);
-          this.setState({ data });
+        .then(newest => {
+          fetch(
+            'http://localhost:3000/api/obs/getRange',
+            {
+              'method': 'POST',
+              'body': JSON.stringify({'start': this.getStartId(), 'end': newest.id})
+            }
+          )
+            .then(j => j.json())
+            .then(missing => {
+              let data = this.state.data;
+
+              for (let item of missing)
+              {
+                let match = false;
+
+                for (let innerItem of data)
+                {
+                  if (item.id == innerItem.id)
+                  {
+                    match = true;
+                  }
+                }
+
+                if (!match)
+                {
+                  data.push(item);
+                }
+              }
+              
+              this.setState({ data });
+            });
         });
     }
 
-    setInterval(newest, 2000);
+    setInterval(newest, 10000);
   }
 
   render()
@@ -53,18 +88,18 @@ export default class Home extends React.Component
           <LineGraph
             data={this.state.data}
             dataKey={'temp'}
-            dataMin={22}
-            dataMax={24}
-            text={'Temperature'}
+            dataMin={16}
+            dataMax={30}
+            text={'Temperature °C'}
             color={'rgba(75,192,192,0.65)'}
             textColor={'#FFF'}
           />
           <LineGraph
             data={this.state.data}
             dataKey={'humid'}
-            dataMin={40}
-            dataMax={60}
-            text={'Humidity'}
+            dataMin={20}
+            dataMax={80}
+            text={'Humidity %'}
             color={'rgba(192,192,75,0.65)'}
             textColor={'#FFF'}
           />
