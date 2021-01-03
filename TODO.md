@@ -7,3 +7,5 @@
 - temp_sensor.ino send light sensor readout directly to csv
 - refactor temp_sensor.ino and remove old code
 - refactor data.py
+
+- runscript for whole service
