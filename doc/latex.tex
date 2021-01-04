@@ -16,6 +16,45 @@
 \usepackage{parskip} % Newline instead of tab in next line
 \usepackage{lmodern} % Latin Modern Font
 \usepackage{sfmath} % Equation Sans-Serif Font
+\usepackage{listings} % Code markup
+\usepackage{xcolor} % Code color
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\color{codegray},
+    stringstyle=\color{codepurple},
+    breakatwhitespace=false,
+    breaklines=true,
+    keepspaces=true,
+    numbers=left,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+
+\lstdefinelanguage{JavaScript}{
+  keywords={break, case, catch, continue, debugger, default, delete, do, else, false, finally, for, function, if, in, instanceof, new, null, return, switch, this, throw, true, try, typeof, var, void, while, with, await, async, case, catch, class, const, default, do, enum, export, extends, finally, from, implements, import, instanceof, let, static, super, switch, throw, try},
+  morecomment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]',
+  morestring=[b]",
+  ndkeywords={class, export, boolean, throw, implements, import, this},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  sensitive=true
+}
+
+\lstset{style=mystyle}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Bulleted list Settings
@@ -184,10 +223,11 @@ Most plants thrive with direct sunlight, but some plants prefer a specific wavel
 The same also holds true for the sun as with the rain, the sun is impractical to control.
 
 \subsection{LED lighting}
-LEDs have really took of the last few years, and they are starting to appear in every possible use for lighting, due to their efficiency.
-For growing plants they are also excellent, since most of LEDs give a good mixture of the red, green and blue color spectrum, and ultraviolet LEDs are also an option.
+LEDs have improved greatly over the last few years. They are easy to come by and are very efficient.
+LEDs are excellent for growing plants since most of LEDs give a good mixture of the red, green and blue color spectrum, and ultraviolet LEDs are also an option.
 A mixture of multiple types of LEDs are also an option.
 Another point for the LED is that they are usually operated with 12V, which gives a simple low-power relay or transistor driver a good interface to a computer.
+For this experiment we are mainly focusing red and blue color spectrum.
 
 \section{Nutrient systems}
 The nutrients that are fed to the plant need not come from traditional soil.
@@ -202,7 +242,7 @@ The tried and tested nutrient system is the soil. This system relies on the degr
 
 The primary drawback is the amount of water needed to grow 1 kg of produce. This is a measure of water efficiency which may not be a factor if we are growing in a humid region, but this becomes a major limitation if we are growing in an arid region with limited water supply.
 
-\subsection{Hydroponic}
+\subsection{Hydroponic system}
 A modern approach to supply nutrients to the plants, this technology uses a water based solution including the nutrients that the cultivar in question requires.
 The roots of the cultivar are exposed directly to this solution.
 This removes the need for the traditional soil to supply nutrients to the plants.
@@ -213,18 +253,20 @@ This could be an option in the Faroe Islands, where there is large scale commerc
 
 Hydroponics are also much more efficient in water usage than traditional soil farming, but for the humid regions this may be a non factor.
 
-\subsection{Aeroponic}
+\subsection{Aeroponic system}
 Another modern approach to a nutrient system, this technology, much like hydroponics, also uses water more directly than the traditional methods.
 
 The aeroponic system sprays a mist of water directly on the roots of the cultivar, where even less water is needed, than the hydroponic system, for the same amount of produce \cite{aeroponic2}.
 
 Aeroponic may be of interest for more extreme need of efficiency, where space exploration and colonization is one of the key areas that aeroponic systems are being considered \cite{mars_agriculture}.
 
-\section{Computer Technologies}
+One of the major drawbacks of the aeroponic system, is the fact that the root itself is suspended in mid air, above the nozzle of a pressurized water supply system. This means that if the water supply system were to fail due to a broken pipe, which also would be more likely to happen, due to the fact that the aeroponic system requires a pressurized water supply system, would render the system ineffective. A failure like this could make the root dry out in just about 2 hours, and would be a catastrophic failure for the whole aeroponic system, and potentially waste valuable resources which a colonization mission in space would potentially not tolerate \cite{mars_agriculture}.
+
+\section{Computer technologies}
 When we are building automated systems nowadays, we are usually using a computer.
 The computer will effortlessly control the electric motors that are present in modern water supply systems.
 
-\subsection{Controlling an Electric Motor}
+\subsection{Controlling an electric motor}
 The simplest way to control an electric motor, is to connect it directly to the computer. But this is easier said than done.
 
 A regular desktop or laptop computer that most everyone uses, does not easily connect up to a electric motor. We need some sort of a interface.
@@ -250,7 +292,7 @@ The supply voltage can be anything that will carry the voltage and current that 
 
 The end result of this circuit is that with a low powered 3.3v 16mA control signal from a GPIO pin on a Raspberry Pi, we are able to control a supply voltage that is capable of delivering 4.5v 180mA to the pump, and thus the pump will function and be controllable from the Raspberry Pi with general purpose programming languages.
 
-\subsection{Programming Languages}
+\subsection{Programming languages}
 The most popular general purpose programming languages according to the 2020 stackoverflow survey, are JavaScript and Python \cite{stackoverflow_survey}.
 
 These programming languages fall into the category of high level modern programming languages, with an easy to learn and read syntax, dynamic typing, memory safety, garbage collection and a interpreter. 
@@ -396,6 +438,11 @@ This would render the HTML,
 </div>
 \end{verbatim}
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% EXPERIMENT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \chapter{Experiment}
 For our experiment we decided to do a proof of concept, of a limited lighting environment with controlled lighting and controlled watering.
 
@@ -415,28 +462,58 @@ All code used for our experiment is found in the attached .zip file.
 
 \section{Cupboard}
 
-The whole plant cultivation box should be seen as one whole unit. This should contain space for the plant, LED, fans, electronics, water pump, cables, Arduino Uno, Raspberry Pi 4 and all the sensors.
-Here I will discuss the Pump system, LEDS and the fans/ventilation system
+The whole plant cultivation box should be seen as one whole unit. There should be space for the plant, LED, fans, electronics, water pump, cables, Arduino Uno, Raspberry Pi 4 and all the sensors.
+The dimensions of the Cupboard is 36 x 28 x 68 cm and has two holes for ventilation. One at the top and one at the bottom.
 
 \subsection{Pump system}
 To pump water from the water tank to the plant itself we are going to be using a centrifuge pump. They are usually small and very cheap on aliexpress. We went for something that could run on 5 volts and the RP4 should be able to run it either directly via the GPIO pins or via a relay.
 We chose to use a relay for simplicity and safety reasons. Relays can allow a lot of voltage through, are cheap to come by and can switch using a very low voltage of 3.3 coming from the RP4.
 As mentioned before the RP4 uses scheduling to turn the water pump relay on and off. This in reality means that we every time the scheduler is running a job a GPIO pin will be active high. This active high at around 3.3 volts is what switches the relay and this is what turns on the water pump. The power to the pump that goes through the switch comes from the Arduino Uno 5v rails. This means that in reality we are using the 5volt USB power supply from the RP4 as our mean to power the water pump.
 
-TALK ABOUT HOW MUCH TIME WAS NEEDED TO PUMP ENOUGH AMOUNT OF WATER
+We did some tests and found that in around 4 seconds of having the pump turned powered on gives us  around 80 ml of water to be transferred from the water tank to the plant. This varies depending of if the tube from the pump to the actual plant was empty or not.
+Using this knowledge we can use this as a measurement for how many seconds the scheduler should run the pump. This depends on factors such as how large the plant and pot is.
 
-SHOW DIAGRAM
+\begin{figure}[h]
+    \includegraphics[width=\linewidth]{Pump Diagram_bb.png}
+    \caption{Relay connected to RP4 and Arduino Uno.}
+    \label{LED_diagram}
+\end{figure}
 
 \subsection{LEDs}
 
+We managed to get our hands on some growing LEDs of type 5050 SMD from aliexpress for a very cheap price and we went ahead on using this for our plant cultivator. The specifications of the LED are as follows:
 
+IP Rate : IP65
+LED Type: SMD 5050
+LED Quantity: 60LED/m 
+Color: Red and Blue (Red:Blue = 3:1)
+LED Wavelength: Red: 660nm; Blue: 450nm
+Voltage: DC 12V
+Power: 8W/m, 36W/5m
+
+NASA conducted an experiment \cite{nasa_led} with growing plants in space using LEDS. According to their research they used blue and red LEDs. This should mean that the LEDs that we bought have the wavelength and brightness that we are going for to similate what NASA have accomplished in space.
+We are powering the LEDs using a 12 volt powersupply. We feed the power supply through a relay. The relay in turn gets turned on and off by the RP4 using a GPIO pin that is controlled by the scheduler of the MCU.
+
+Here is the diagram of the setup
+
+\begin{figure}[h]
+    \includegraphics[width=\linewidth]{LED Diagram_bb.png}
+    \caption{Relay connected to RP4 and Arduino Uno.}
+    \label{LED_diagram}
+\end{figure}
 
 \subsection{Fans}
+
+The fans are two Lian Li ST120 120mm PC fans. They are connected in serial instead of parallel. Because of noise we chose to run them at half capacity, so we thought it was wise to have each fan running at around half capacity.
+The Fans get power from the same relay as shown in figure 5.1
+That means when the LED turns on, so does the fans. We only need cooling when the LEDS are active, so this makes sense.
+
+The fans spin at 800 and 1900 RPM and are rated deliver a maximum airflow of 69.17 CFM. This should be more than suffice for such a small box that the entire unit is.
 
 
 \section{Arduino UNO}
 The Ardunio UNO is connected to the Pi over a Universal Serial Bus (USB) connection.
-We use 5V USB from the Pi, to power the Arduino.
+We use 5V USB from the Pi, to power the Arduino. Here we are using the Uno board as the main sensor readout unit (SRU). We have attached temperature/moisture sensor such as the DHT11 and also a photoresistor. All the data that we get from the sensors are sent to the RP4 using serial over USB.
 
 \subsection{DHT11}
 The temperature and humidity sensor DHT11, gives a digital signal which is then decoded using the DHT Arduino library \cite{dht}.
@@ -465,10 +542,12 @@ It is connected to the Arduino using diagram \ref{diagram2}.
 The Arduino is capable of reading and writing data to the Serial object in the standard Arduino library, which then sends data over a serial protocol to the USB connection that is found on the back of the Arduino.
 This data is then sent to the Pi, as a single line CSV.
 
-An example of this data is the following
-TODO(insert example of arduino CSV data here)
+An example of this data is the following,
 \begin{verbatim}
+23.00,41.00,0
 \end{verbatim}
+
+Where the first value is the temprature, second the humidity and lastly the photoresistor.
 
 \section{Raspberry Pi 4}
 The Raspberry Pi 4 is a single board computer, which has a ARM CPU.
@@ -502,8 +581,8 @@ Flask exposes 4 endpoints which allows the UI to control the crontab and the sec
 
 We use threads to allow us to control the pump and lighting systems, while simultaneously reading data over the serial connection and also sending that data to the web UI, and also allowing the UI to reconfigure jobs.
 
-\subsection{Web User Interface}
-The Web User Interface (UI) is a simple proof of concept for the controls needed to operate our simulated use case scenario.
+\subsection{Web user interface}
+The web user interface (UI) is a simple proof of concept for the controls needed to operate our simulated use case scenario.
 
 For our UI we use JavaScript as the programming language.
 
@@ -513,13 +592,50 @@ We use the JavaScript library Chart.js, to render our charts in a usable and pre
 
 We use the Fetch API as the HTTP client to fetch data from our python APIs to our Next.js backend, and then preprocess that data to deliver it with the first http request to the client, and the client then later uses the Fetch API to incrementally fetch new data from the Next.js backend API.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Data Analysis
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \chapter{Data Analysis}
+To record the data for the data analysis we logged 40 minutes of data. 20 minutes of the time the LEDS are on and 20 minutes of the time the LEDS are off. This should tell us the states that the plants are in during the lighting schedule. Using the 20 minute states we should assume that this is how the plant behaves the rest of the time because we are dealing with an isolated unit.
+
+\section{Temperature}
+Figure \ref{temp_log} shows us the temperature while the LEDS are on and off and as we can see the temperature is not affected by the LEDS at all. This should mean that the airflow is sufficient enough to combat the heat dissipation of the LEDS so that the temperature is stable throughout the light cycle.
+
+\begin{figure}[h]
+    \begin{center}
+        \label{temp_log}
+        \includegraphics[width=0.75\linewidth]{temp_log.png}
+        \caption{40 minute temperature log.}
+    \end{center}
+\end{figure}
+
+\section{Humidity}
+Figure \ref{humidity_log} shows us the humidity while the LEDS are on and off. We can see that the humidity is affected by the state of the light cycle. While the LEDS are off the humidity is higher. This can be explained by the fact that the fans are not active and therefore is not sucking any humid air out of the box. While the LEDS and fans are active the humidity drops somewhat by 3 percent.
+
+\begin{figure}[h]
+    \begin{center}
+        \label{humidity_log}
+        \includegraphics[width=0.75\linewidth]{humidity_log.png}
+        \caption{40 minute humidity log.}
+    \end{center}
+\end{figure}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Discussion
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \chapter{Discussion}
 
+\section{Humidity and Temperature}
+From what we can tell from the data analysis, the LED, fans and box is behaving like we anticipated. We guessed that the temperature would be stable because both fans run at the same time. We considered having one fan sucking air out of the box while the leds were inactive, this would create some air flow during the inactive light cycle. This could have caused the temperature to decrease somewhat while the LEDs were off. We decided to have both fans running while the LEDs are on so that the temperature would be more stable. This seems to have worked. What we were going for was to have a temperature between 15 and 25 degrees celsius and we have reached this temperature.
+
+We can observe that the humidity is relatively low, and that it is expected to follow somewhat the surrounding environment outside the cupboard.
+We only have control over the humidity of the cupboard when we also want lighting at the same time. This could prove to be inconvenient when we would like a slightly higher humidity for a particular species of cultivar or the inverse.
 
 \section{DHT11 error when operating pump}
-When the pump relay opens, the temperature and humidity sensor fails to read.
+Occasionally when the pump relay opens, the temperature and humidity sensor fails to read.
 
 At this point we speculate that some noise from the pump is interfering with the DHT11 sensor, or that the pump draws too much current from the Arduino, such that there is not enough current for the DHT11 sensor, but we do not have any data to back this hypothesis up.
 
@@ -557,7 +673,986 @@ We have collected data and analyzed that data, and can conclude that it is possi
 
 \appendix
 \cleardoublepage\addcontentsline{toc}{chapter}{Appendices}
-\chapter{Appendix}
+\chapter{Code}
+
+\section{Python}
+\begin{lstlisting}[title={raspberrypi/api/requirements.py}, language=Python]
+APScheduler==3.6.3
+click==7.1.2
+colorzero==1.1
+Flask==1.1.2
+gpiozero==1.5.1
+itsdangerous==1.1.0
+Jinja2==2.11.2
+MarkupSafe==1.1.1
+pigpio==1.44
+pyserial==3.5
+pytz==2020.4
+RPi.GPIO==0.7.0
+six==1.15.0
+SQLAlchemy==1.3.20
+tzlocal==2.1
+Werkzeug==1.0.1
+\end{lstlisting}
+
+\begin{lstlisting}[title={raspberrypi/api/data.py}, language=Python]
+import flask
+import json
+
+import threading
+import serial
+
+import gpiozero
+
+import time
+import datetime
+
+import atexit
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.cron import CronTrigger
+from apscheduler.jobstores.base import JobLookupError
+
+
+app = flask.Flask(__name__)
+
+obs = []
+
+class Scheduler:
+    def __init__(self, pin):
+        try:
+            self.pin = gpiozero.LED(pin)
+        except gpiozero.exc.BadPinFactory:
+            class MochPin():
+                def on(self):
+                    pass
+
+                def off(self):
+                    pass
+            self.pin = MochPin()
+
+        self.jobId = 0
+        self.crontab = ''
+        self.interval = 0
+
+        self.scheduler = BackgroundScheduler(daemon=True)
+        self.scheduler.start()
+        atexit.register(lambda: self.scheduler.shutdown())
+
+    def setInterval(self, interval):
+        if interval < 0.001:
+            raise ValueError
+        self.interval = interval
+
+        print(f"{datetime.datetime.utcnow()} - job set interval {self.interval}")
+
+    def setCrontab(self, crontab):
+        self.crontab = crontab
+
+    def runPinInterval(self, pin, interval):
+        if interval < 0.001:
+            return
+        
+        pin.on()
+        print(f"{datetime.datetime.utcnow()} - pin on")
+        
+        time.sleep(interval)
+        
+        pin.off()
+        print(f"{datetime.datetime.utcnow()} - pin off")
+
+    def addJob(self):
+        try:
+            self.scheduler.remove_job(str(self.jobId))
+            print(f"{datetime.datetime.utcnow()} - job {self.jobId} stopped")
+        except JobLookupError:
+            pass
+        
+        self.jobId += 1
+
+        self.scheduler.add_job(
+            func = self.runPinInterval,
+            args = [self.pin, self.interval],
+            trigger = CronTrigger.from_crontab(self.crontab),
+            id = str(self.jobId)
+        )
+        print(f"{datetime.datetime.utcnow()} - job {self.jobId} started")
+
+pumpScheduler = Scheduler(26)
+lightScheduler = Scheduler(19)
+
+class ReadSerialThread(threading.Thread):
+    def __init__(self, path):
+        threading.Thread.__init__(self)
+
+        self.path = path
+        self.ser = None
+
+        self.loadSerial()
+
+        self.header = ['temp', 'humid', 'light']
+        self.id = 1
+
+    def loadSerial(self):
+        try:
+            self.ser = serial.Serial(self.path, 9600, timeout = 1)
+            self.ser.flush()
+        except serial.serialutil.SerialException:
+            pass
+
+    def innerLoop(self):
+        if self.ser is None:
+            self.loadSerial()
+            return
+        
+        if not self.ser.is_open:
+            try:
+                self.ser.open()
+            except serial.serialutil.SerialException:
+                pass
+        
+        try:
+            if (self.ser.is_open) and (self.ser.in_waiting > 0):
+                item = {}
+                row = self.ser.readline().decode('utf-8').rstrip().split(',')
+
+                item['id'] = self.id
+                self.id += 1
+
+                item['timestamp'] = datetime.datetime.utcnow().isoformat()
+
+                for i in range(len(self.header)):
+                    item[self.header[i]] = row[i]
+
+                obs.append(item)
+        except OSError:
+            self.ser.close()
+
+    def run(self):
+        while True:
+            self.innerLoop()
+            time.sleep(0.1)
+
+ReadSerialThread('/dev/ttyACM0').start()
+
+@app.route('/api/obs', methods=['GET'])
+def getData():
+    return json.dumps(obs, indent = 2, default = str)
+
+@app.route('/api/obs/<int:itemId>', methods=['GET'])
+def getDataId(itemId):
+    result = None
+
+    for item in obs:
+        if item['id'] == itemId:
+            result = item
+
+    return json.dumps(result, indent = 2, default = str)
+
+@app.route('/api/obs/<int:idFrom>/<int:idTo>', methods=['GET'])
+def getDataFromTo(idFrom, idTo):
+    result = []
+
+    for item in obs:
+        if (item['id'] >= idFrom) and (item['id'] <= idTo):
+            result.append(item)
+
+    return json.dumps(result, indent = 2, default = str)
+
+@app.route('/api/obs/lastDay')
+def getObsLastDay():
+    result = []
+
+    lastDay = datetime.datetime.utcnow() - datetime.timedelta(hours=24)
+
+    for item in obs:
+        if datetime.datetime.fromisoformat(item['timestamp']) > lastDay:
+            result.append(item)
+
+    return json.dumps(result, indent = 2, default = str)
+
+@app.route('/api/obs/newest')
+def getObsNewest():
+    result = None
+
+    try:
+        result = obs[-1]
+    except IndexError:
+        pass
+
+    return json.dumps(result, indent = 2, default = str)
+
+@app.route('/api/pump/schedule', methods=['POST'])
+def addPumpSchedule():
+    statusCode = 0
+
+    try:
+        data = str(flask.request.get_json(force=True)['data'])
+        
+        pumpScheduler.setCrontab(data)
+        pumpScheduler.addJob()
+    except ValueError:
+        statusCode = -1
+    except:
+        statusCode = -2
+
+    return json.dumps({'status': statusCode}, indent = 2, default = str)
+
+@app.route('/api/pump/interval', methods=['POST'])
+def setPumpInterval():
+    statusCode = 0
+
+    try:
+        data = float(flask.request.get_json(force=True)['data'])
+
+        pumpScheduler.setInterval(data)
+        pumpScheduler.addJob()
+    except ValueError:
+        statusCode = -1
+    except:
+        statusCode = -2
+
+    return json.dumps({'status': statusCode}, indent = 2, default = str)
+
+@app.route('/api/light/schedule', methods=['POST'])
+def addLightSchedule():
+    statusCode = 0
+
+    try:
+        data = str(flask.request.get_json(force=True)['data'])
+        
+        lightScheduler.setCrontab(data)
+        lightScheduler.addJob()
+    except ValueError:
+        statusCode = -1
+    except:
+        statusCode = -2
+
+    return json.dumps({'status': statusCode}, indent = 2, default = str)
+
+@app.route('/api/light/interval', methods=['POST'])
+def setLightInterval():
+    statusCode = 0
+
+    try:
+        data = float(flask.request.get_json(force=True)['data'])
+
+        lightScheduler.setInterval(data)
+        lightScheduler.addJob()
+    except ValueError:
+        statusCode = -1
+    except:
+        statusCode = -2
+
+    return json.dumps({'status': statusCode}, indent = 2, default = str)
+
+if __name__ == '__main__':
+    app.run()
+\end{lstlisting}
+
+\section{Web User Interface}
+\begin{lstlisting}[title={raspberrypi/ui/package.json}, language=JavaScript]
+{
+  "name": "ui",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "chart.js": "^2.9.4",
+    "next": "10.0.4",
+    "react": "17.0.1",
+    "react-chartjs-2": "^2.11.1",
+    "react-dom": "17.0.1"
+  }
+}
+\end{lstlisting}
+
+\bigskip
+
+\begin{lstlisting}[title={raspberrypi/ui/pages/\_app.js}, language=JavaScript]
+import '../styles/globals.css'
+
+
+function MyApp({ Component, pageProps }) {
+  return <Component {...pageProps} />
+}
+
+export default MyApp
+\end{lstlisting}
+
+\bigskip
+
+\begin{lstlisting}[title={raspberrypi/ui/pages/index.js}, language=JavaScript]
+import React from 'react';
+import styles from '../styles/Home.module.css';
+
+import Head from 'next/head';
+import LineGraph from '../components/LineGraph';
+import TextField from '../components/TextField';
+
+
+export async function getServerSideProps()
+{
+  const res = await fetch('http://localhost:3000/api/obs/lastDay');
+  const data = await res.json();
+
+  return { props: { data } };
+}
+
+export default class Home extends React.Component
+{
+  constructor(props)
+  {
+    super(props);
+
+    this.state = {
+      'data': this.props.data
+    };
+  }
+
+  getStartId()
+  {
+    if (this.state.data.length > 0)
+      return this.state.data[this.state.data.length - 1].id + 1;
+    return 1;
+  }
+
+  componentDidMount()
+  {
+    let newest = () => {
+      fetch(`http://localhost:3000/api/obs/newest`)
+        .then(j => j.json())
+        .then(newest => {
+          fetch(
+            'http://localhost:3000/api/obs/getRange',
+            {
+              'method': 'POST',
+              'body': JSON.stringify({'start': this.getStartId(), 'end': newest.id})
+            }
+          )
+            .then(j => j.json())
+            .then(missing => {
+              let data = this.state.data;
+
+              for (let item of missing)
+              {
+                let match = false;
+
+                for (let innerItem of data)
+                {
+                  if (item.id == innerItem.id)
+                  {
+                    match = true;
+                  }
+                }
+
+                if (!match)
+                {
+                  data.push(item);
+                }
+              }
+              
+              this.setState({ data });
+            });
+        })
+        .catch(() => { });
+    }
+
+    setInterval(newest, 10000);
+  }
+
+  render()
+  {
+    // https://stackoverflow.com/a/7036361
+    let rePositiveInteger = /^[1-9]\d*$/;
+    
+    // https://stackoverflow.com/a/17858524
+    let reCrontab = /^(\*|([0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9])|\*\/([0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9])) (\*|([0-9]|1[0-9]|2[0-3])|\*\/([0-9]|1[0-9]|2[0-3])) (\*|([1-9]|1[0-9]|2[0-9]|3[0-1])|\*\/([1-9]|1[0-9]|2[0-9]|3[0-1])) (\*|([1-9]|1[0-2])|\*\/([1-9]|1[0-2])) (\*|([0-6])|\*\/([0-6]))$/;
+
+    return (
+      <div style={{background: '#181818', minHeight: '100vh'}}>
+        <Head>
+          <title>Create Next App</title>
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
+
+        <div className={styles.grid}>
+          <LineGraph
+            data={this.state.data}
+            dataKey={'temp'}
+            dataMin={16}
+            dataMax={30}
+            text={'Temperature °C'}
+            color={'rgba(75,192,192,0.65)'}
+            textColor={'#FFF'}
+          />
+          <LineGraph
+            data={this.state.data}
+            dataKey={'humid'}
+            dataMin={20}
+            dataMax={80}
+            text={'Humidity %'}
+            color={'rgba(192,192,75,0.65)'}
+            textColor={'#FFF'}
+          />
+        </div>
+        <div className={styles.scheduleControls}>
+          <div className={styles.pumpScheduleControls}>
+            <TextField
+              text={'Pump Schedule (cron)'}
+              dataKey={'pumpSchedule'}
+              placeHolder={'* * * * *'}
+              url={'http://localhost:3000/api/pump/schedule'}
+              re={reCrontab}
+            />
+
+            <TextField
+              text={'Pump Interval (s)'}
+              dataKey={'pumpInterval'}
+              placeHolder={'2'}
+              url={'http://localhost:3000/api/pump/interval'}
+              re={rePositiveInteger}
+            />
+          </div>
+          <div className={styles.lightScheduleControls}>
+            <TextField
+              text={'Light Schedule (cron)'}
+              dataKey={'lightSchedule'}
+              placeHolder={'* * * * *'}
+              url={'http://localhost:3000/api/light/schedule'}
+              re={reCrontab}
+            />
+            
+            <TextField
+              text={'Light Interval (s)'}
+              dataKey={'lightInterval'}
+              placeHolder={'21600'}
+              url={'http://localhost:3000/api/light/interval'}
+              re={rePositiveInteger}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+\end{lstlisting}
+
+\bigskip
+
+\begin{lstlisting}[title={raspberrypi/ui/pages/api/light/interval.js}, language=JavaScript]
+export { default } from '../../../helpers/APIForward';
+\end{lstlisting}
+
+\bigskip
+
+\begin{lstlisting}[title={raspberrypi/ui/pages/api/light/schedule.js}, language=JavaScript]
+export { default } from '../../../helpers/APIForward';
+\end{lstlisting}
+
+\bigskip
+
+\begin{lstlisting}[title={/raspberrypi/ui/pages/api/obs/getRange.js}, language=JavaScript]
+export default async function APIForward(req, res)
+{
+  if (req.method === 'POST')
+  {
+    let body = JSON.parse(req.body);
+
+    let data = await fetch(`http://localhost:5000/api/obs/${body.start}/${body.end}`);
+    data = await data.json();
+
+    res.status(200)
+      .json(data);
+  }
+
+  res.status(405)
+    .end();
+}
+\end{lstlisting}
+
+\bigskip
+
+\begin{lstlisting}[title={/raspberrypi/ui/pages/api/obs/lastDay.js}, language=JavaScript]
+export { default } from '../../../helpers/APIForward';
+\end{lstlisting}
+
+\bigskip
+
+\begin{lstlisting}[title={/raspberrypi/ui/pages/api/obs/newest.js}, language=JavaScript]
+export { default } from '../../../helpers/APIForward';
+\end{lstlisting}
+
+\bigskip
+
+\begin{lstlisting}[title={raspberrypi/ui/pages/api/pump/interval.js}, language=JavaScript]
+export { default } from '../../../helpers/APIForward';
+\end{lstlisting}
+
+\bigskip
+
+\begin{lstlisting}[title={raspberrypi/ui/pages/api/pump/schedule.js}, language=JavaScript]
+export { default } from '../../../helpers/APIForward';
+\end{lstlisting}
+
+\bigskip
+
+\begin{lstlisting}[title={raspberrypi/ui/helpers/APIForward.js}, language=JavaScript]
+export default async function APIForward(req, res)
+{
+  let url = `http://localhost:5000${req.url}`;
+
+  if (req.method === 'GET')
+  {
+    let data = await fetch(url);
+    data = await data.json();
+
+    res.status(200)
+      .json(data);
+  }
+
+  if (req.method === 'POST')
+  {
+    let data = await fetch(
+      url,
+      {
+        'method': 'POST',
+        'body': req.body
+      }
+    );
+    data = await data.json();
+
+    res.status(200)
+      .json(data);
+  }
+
+  res.status(405)
+    .end();
+}
+\end{lstlisting}
+
+\bigskip
+
+\begin{lstlisting}[title={raspberrypi/ui/components/LineGraph.js}, language=JavaScript]
+import React from 'react';
+import styles from '../styles/LineGraph.module.css';
+
+import { Line } from 'react-chartjs-2';
+
+
+export default class Graph extends React.Component
+{
+  render()
+  {
+    let label = [];
+    let data = [];
+
+    const now = new Date();
+    
+    let minuteData = [];
+
+    for (let item of this.props.data)
+    {
+      if ((now - new Date(item['timestamp'])) <= 5*60*1010)
+      {
+        minuteData.push(item);
+      }
+    }
+
+    for (let i = 0; i <= 5*6; i++)
+    {
+      let sum = 0;
+      let count = 0;
+
+      for (let item of minuteData)
+      {
+        if (
+          ((now - new Date(item['timestamp'])) >= (i)*10000) &&
+          ((now - new Date(item['timestamp'])) <= (i+1)*10000)
+        )
+        {
+          let dataKey = parseFloat(item[this.props.dataKey]);
+
+          if (dataKey > -999.00)
+          {
+            sum += dataKey;
+            count += 1;
+          }
+        }
+      }
+      
+      data.push((sum / count).toFixed(2));
+      label.push((i)*10000);
+    }
+
+    let lineData = {
+      labels: label,
+      datasets: [
+        {
+          label: this.props.text,
+          fill: false,
+          pointRadius: 0,
+          pointHoverRadius: 0,
+          pointHitRadius: 7,
+          borderColor: this.props.color,
+          backgroundColor: this.props.color,
+          data: data,
+        }
+      ]
+    };
+
+    let lineOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      legend: {
+        position: 'top',
+        labels: {
+          fontColor: this.props.textColor
+        },
+      },
+      scales: {
+        xAxes: [
+          {
+            type: 'time',
+            time: {
+              unit: 'minute',
+              displayFormats: {
+                minute: 'm:ss'
+              },
+              tooltipFormat:'m:ss',
+            },
+            ticks: {
+              fontColor: 'inherit',
+              max: 5*60*1001,
+              min: 0,
+              stepSize: 0,
+              maxTicksLimit: 1,
+              maxRotation: 0,
+              minRotation: 0,
+              reverse: true,
+            },
+            gridLines: {
+              color: 'rgba(255,255,255,0.12)',
+              zeroLineColor: 'rgba(255,255,255,0.12)',
+            },
+            scaleLabel: {
+              fontColor: 'inherit',
+              display: true,
+              labelString: 'Last 5 minutes'
+            },
+          }
+        ],
+        yAxes: [
+          {
+            ticks: {
+              fontColor: 'inherit',
+              suggestedMax: this.props.dataMax,
+              suggestedMin: this.props.dataMin,
+              stepSize: 0.5,
+              maxTicksLimit: 6,
+              maxRotation: 0,
+              minRotation: 0,
+            },
+            gridLines: {
+              color: 'rgba(255,255,255,0.12)',
+              zeroLineColor: 'rgba(255,255,255,0.12)',
+            },
+          }
+        ],
+      }
+    }
+
+    return (
+      <div className={styles.container}>
+        <Line
+          data={lineData}
+          options={lineOptions}
+        />
+      </div>
+    );
+  }
+}
+\end{lstlisting}
+
+\bigskip
+
+\begin{lstlisting}[title={raspberrypi/ui/components/TextField.js}, language=JavaScript]
+import React from 'react';
+import styles from '../styles/TextField.module.css';
+
+
+export default class TextField extends React.Component
+{
+  constructor(props)
+  {
+    super(props);
+
+    this.event = {};
+    this.element = React.createRef();
+  }
+
+  changeInputColor(color)
+  {
+    this.event.target.elements[0].style = `border-color: ${color}`;
+    new Promise(res => setTimeout(res, 2000))
+      .then(() => { this.event.target.elements[0].style = 'border-color: transperent'; });
+  }
+
+  componentDidMount()
+  {
+    this.element.current.onsubmit = (event) => {
+      this.event = event;
+      this.event.preventDefault();
+
+      let input = this.event.target.elements[0].value;
+      
+      // Test if crontab is valid
+      if ((this.props.re) && (!this.props.re.test(input)))
+      {
+        this.changeInputColor('red');
+        return;
+      }
+
+      fetch(
+        this.props.url,
+        {
+          'method': 'POST',
+          'body': JSON.stringify({'data': input})
+        }
+      )
+        .then(body => body.json())
+        .then(j => console.log(j));
+
+      this.changeInputColor('green');
+    }
+  }
+
+  render()
+  {
+    return (
+      <form ref={this.element} className={styles.form}>
+        <label className={styles.label} htmlFor={this.props.dataKey}>{this.props.text}</label>
+        <input className={styles.input} type="text" id={this.props.dataKey} name={this.props.dataKey} placeholder={this.props.placeHolder}/>
+      </form>
+    );
+  }
+}
+\end{lstlisting}
+
+\bigskip
+
+\begin{lstlisting}[title={raspberrypi/ui/styles/globals.css}, language=JavaScript]
+html, body
+{
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  color: #FFF;
+  background: '#181818';
+}
+
+a
+{
+  color: inherit;
+  text-decoration: none;
+}
+
+*
+{
+  box-sizing: border-box;
+}
+\end{lstlisting}
+
+\bigskip
+
+\begin{lstlisting}[title={raspberrypi/ui/styles/Home.module.css}, language=JavaScript]
+.container {
+  min-height: 100vh;
+  padding: 0 0.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.main {
+  padding: 5rem 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.footer {
+  width: 100%;
+  height: 100px;
+  border-top: 1px solid #eaeaea;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.footer img {
+  margin-left: 0.5rem;
+}
+
+.footer a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.title a {
+  color: #0070f3;
+  text-decoration: none;
+}
+
+.title a:hover,
+.title a:focus,
+.title a:active {
+  text-decoration: underline;
+}
+
+.title {
+  margin: 0;
+  line-height: 1.15;
+  font-size: 4rem;
+}
+
+.title,
+.description {
+  text-align: center;
+}
+
+.description {
+  line-height: 1.5;
+  font-size: 1.5rem;
+}
+
+.code {
+  background: #fafafa;
+  border-radius: 5px;
+  padding: 0.75rem;
+  font-size: 1.1rem;
+  font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono,
+    Bitstream Vera Sans Mono, Courier New, monospace;
+}
+
+.grid
+{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.card {
+  margin: 1rem;
+  flex-basis: 45%;
+  padding: 1.5rem;
+  text-align: left;
+  color: inherit;
+  text-decoration: none;
+  border: 1px solid #eaeaea;
+  border-radius: 10px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.card:hover,
+.card:focus,
+.card:active {
+  color: #0070f3;
+  border-color: #0070f3;
+}
+
+.card h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.5rem;
+}
+
+.card p {
+  margin: 0;
+  font-size: 1.25rem;
+  line-height: 1.5;
+}
+
+.logo {
+  height: 1em;
+}
+
+.scheduleControls
+{
+  
+}
+
+@media (max-width: 799px)
+{
+  .grid
+  {
+    width: 100%;
+    flex-direction: column;
+  }
+}
+\end{lstlisting}
+
+\bigskip
+
+\begin{lstlisting}[title={raspberrypi/ui/styles/LineGraph.module.css}, language=JavaScript]
+.container
+{
+  height: 300px;
+  margin-top: 60px;
+}
+
+@media (min-width: 800px)
+{
+  .container
+  {
+    height: 400px;
+    margin-left: 30px;
+    margin-right: 30px;
+  }
+}
+\end{lstlisting}
+
+\bigskip
+
+\begin{lstlisting}[title={raspberrypi/ui/styles/TextField.module.css}, language=JavaScript]
+.form
+{
+  margin-top: 60px;
+  text-align: center;
+}
+
+.label
+{
+  display: block;
+  margin-bottom: 10px;
+}
+
+.input
+{
+  padding: 5px;
+  border-radius: 5px;
+  border-width: 3px;
+  border-color: transparent;
+  border-style: solid;
+  outline: none;
+  width: 120px;
+  text-align: center;
+}
+
+.input:focus
+{
+  border-color: #29b6f6;
+}
+\end{lstlisting}
+
 \backmatter
 \cleardoublepage\addcontentsline{toc}{chapter}{Bibliography}
 \bibliographystyle{unsrt}

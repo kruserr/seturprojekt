@@ -78,6 +78,12 @@ export default class Home extends React.Component
 
   render()
   {
+    // https://stackoverflow.com/a/7036361
+    let rePositiveInteger = /^[1-9]\d*$/;
+    
+    // https://stackoverflow.com/a/17858524
+    let reCrontab = /^(\*|([0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9])|\*\/([0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9])) (\*|([0-9]|1[0-9]|2[0-3])|\*\/([0-9]|1[0-9]|2[0-3])) (\*|([1-9]|1[0-9]|2[0-9]|3[0-1])|\*\/([1-9]|1[0-9]|2[0-9]|3[0-1])) (\*|([1-9]|1[0-2])|\*\/([1-9]|1[0-2])) (\*|([0-6])|\*\/([0-6]))$/;
+
     return (
       <div style={{background: '#181818', minHeight: '100vh'}}>
         <Head>
@@ -107,41 +113,37 @@ export default class Home extends React.Component
         </div>
         <div className={styles.scheduleControls}>
           <div className={styles.pumpScheduleControls}>
-            {/* https://stackoverflow.com/a/17858524 */}
             <TextField
               text={'Pump Schedule (cron)'}
               dataKey={'pumpSchedule'}
               placeHolder={'* * * * *'}
               url={'http://localhost:3000/api/pump/schedule'}
-              re={/^(\*|([0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9])|\*\/([0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9])) (\*|([0-9]|1[0-9]|2[0-3])|\*\/([0-9]|1[0-9]|2[0-3])) (\*|([1-9]|1[0-9]|2[0-9]|3[0-1])|\*\/([1-9]|1[0-9]|2[0-9]|3[0-1])) (\*|([1-9]|1[0-2])|\*\/([1-9]|1[0-2])) (\*|([0-6])|\*\/([0-6]))$/}
+              re={reCrontab}
             />
 
-            {/* https://stackoverflow.com/questions/7036324/what-is-the-regex-for-any-positive-integer-excluding-0 */}
             <TextField
               text={'Pump Interval (s)'}
               dataKey={'pumpInterval'}
               placeHolder={'2'}
               url={'http://localhost:3000/api/pump/interval'}
-              re={/^[1-9]\d*$/}
+              re={rePositiveInteger}
             />
           </div>
           <div className={styles.lightScheduleControls}>
-            {/* https://stackoverflow.com/a/17858524 */}
             <TextField
               text={'Light Schedule (cron)'}
               dataKey={'lightSchedule'}
               placeHolder={'* * * * *'}
               url={'http://localhost:3000/api/light/schedule'}
-              re={/^(\*|([0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9])|\*\/([0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9])) (\*|([0-9]|1[0-9]|2[0-3])|\*\/([0-9]|1[0-9]|2[0-3])) (\*|([1-9]|1[0-9]|2[0-9]|3[0-1])|\*\/([1-9]|1[0-9]|2[0-9]|3[0-1])) (\*|([1-9]|1[0-2])|\*\/([1-9]|1[0-2])) (\*|([0-6])|\*\/([0-6]))$/}
+              re={reCrontab}
             />
             
-            {/* https://stackoverflow.com/questions/7036324/what-is-the-regex-for-any-positive-integer-excluding-0 */}
             <TextField
               text={'Light Interval (s)'}
               dataKey={'lightInterval'}
               placeHolder={'21600'}
               url={'http://localhost:3000/api/light/interval'}
-              re={/^[1-9]\d*$/}
+              re={rePositiveInteger}
             />
           </div>
         </div>
