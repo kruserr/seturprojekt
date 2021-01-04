@@ -90,19 +90,16 @@ We are going to use a Rasbperry Pi 4 as our MCU.
 The MCU will read sensor data coming from the Sensor Readout Unit (SRU).
 The MCU should read sensor data continuously and based on the sensor data and what configuration is loaded during startup it should control the box by turning on/off lights, ventilation and water pump.
 
-The MCU also hosts a local server where a user can retrieve the sensor data being sent from the SRU. Basically we can see how the box is behaving.
-We also have the option to change schedule of the lights/ventilation and water pump. Here we utilize a linux system utility called crontab. \cite{crontab}
-Crontab works as a scheduler for the operating system to call abitrary commands. We are then going to use crontab to call python files for turning on and off the relays that control the various elementson the box such as LEDs/fans and water pump.
-We used the crontab as a way to use GPIO pins to turn on and off on a schedule. This made sense for us because we are using a linux operating system. Using crontab instead of implementing a scheduler saves us time to focus on the rest of the build.
+The MCU also hosts a local server where a user can retrieve the sensor data being sent from the SRU. Basically we can see how the box is doing.
+We should also have the option to change schedule of the lights/ventilation and water pump. This should all be done via a browser for ease of use.
 
 \section{Sensor Readout Unit}
 
-We are going to use an Arduino because we can power it via USB from the Raspberry Pi 4.
-Arduino is a very easy way to get sensor data because of the vast majority of libraries that exists on the internet. We chose to use example code and change it to our liking. The way the SRU sends data to the Raspberry Pi is via Serial Over USB. So an array of sensor data is sent via serial to '/dev/ttyASM0' on the Raspberry Pi 4 every 5 seconds and updates when sensor data is valid.
+For sensor data we are going to use an Arduino Uno. We can very easily read several sensors in a loop and send the data out to the raspberry Pi. The idea is to use a USB cable between the Raspberry Pi 4 and the Arduino Uno board. Not only will the RP4 power the Uno board but it will also be able to receive data via serial through the USB cable. The idea is to have an array of sensor data sent via serial to '/dev/ttyASM0' on the RP4 every 5 seconds and updates when sensor data is valid.
 
 \section{The Box}
 
-We need some way to contain the plant, the LEDs, the ventilation and all the units and cables as one unit. We are going to use a single cubbard to contain the plant, the LED and on the back of the cubbard we are going to mount cables, RP4 and Arduino and ventilation fans.
+We need some way to contain the plant, the LEDs, the ventilation and all the units and cables as one unit. We are going to use a single cubbard to contain the plant, the LED and on the back of the cubbard we are going to mount cables, RP4 and Arduino and ventilation fans. The idea is to have everything as one unit.
 
 \section{Ventilation}
 The ventilation is made up of two 120mm PC style fans that support PWM and DC. The fans are rated to (INSERT REFERENCE HERE)
@@ -110,14 +107,14 @@ We then drill two holes in the back of the cubbard for ventilation for air going
 
 \section{Web Service}
 
-We need some way to visualize to the user the current state of the plant cultivator. Because of this we chose to use a web service using flask to handle requests from the user to what data is present. Simple http requests can get data and data can be visualized using a browser. Temperature and humidity is shown and it is also possible to change the schedule for lights/ventilation and water pump. The user can input numbers and a crontab can be planned accordingly.
+We need some way to visualize to the user the current state of the plant cultivator. Because of this we chose to use a web service using flask to handle requests from the user to what data is present. Simple http requests can get data and data can be visualized using a browser. Temperature and humidity is shown and it is also possible to change the schedule for lights/ventilation and water pump.
 
 \section{Assembly}
 
 Each seperate unit should be build and tested first on breadboards and finally somewhat be soldered to a PCB to eliminate errors and missing cables. Each part is then connected together via specially made cables that are similar to jumper cables. Sensors are stored inside the cubbard and wires are soldered and lead throuh holes in the cubbard to be connected to the Arduino. The raspberry pi then has cables going from the GPIO pins to relays that controll the LED/fans and water pump.
 
 \section{Data Analysis and Conclusion}
-After finishing assembly we are going to log data for around a day. When sufficient data has been collected we will write a conclusion based on our findings.
+After finishing assembly we are going to log data for around a day. We are going to log data while the lights are on and while the lights are off. When sufficient data has been collected we will determine if we managed to build a plant cultivation box or not. We can know this by analyzing the data and writing a conclusion.
 
 \chapter{Theory}
 In the theory chapter, we will be looking at what makes our approach to the experiment tick.
@@ -186,9 +183,6 @@ Most plants thrive with direct sunlight, but some plants prefer a specific wavel
 
 The same also holds true for the sun as with the rain, the sun is impractical to control.
 
-\subsection{Fluorescent lighting}
-TODO
-
 \subsection{LED lighting}
 LEDs have really took of the last few years, and they are starting to appear in every possible use for lighting, due to their efficiency.
 For growing plants they are also excellent, since most of LEDs give a good mixture of the red, green and blue color spectrum, and ultraviolet LEDs are also an option.
@@ -199,17 +193,32 @@ Another point for the LED is that they are usually operated with 12V, which give
 The nutrients that are fed to the plant need not come from traditional soil.
 Modern agriculture has presented technologies such as the hydroponic nutrient system.
 These modern systems allow for a more efficient use of water per kg of produce.
+According to Ziegler, "to produce a kilogram of tomatoes using traditional land
+cultivation requires 200 to 400 liters of water, hydroponics requires about 70 liters,
+aeroponics utilizes only about 20 liters" \cite{aeroponic}.
 
 \subsection{Soil}
 The tried and tested nutrient system is the soil. This system relies on the degradation of organic materials which decompose over a long time. This system is perfect for most plants, but when used for modern agriculture there are some drawbacks to this system.
 
-The primary drawback is the amount of water needed to grow 1 kg of produce. This is a measure of water efficiency which may not be a factor if we are growing in a humid region, but this becomes a major limitation if we are growing in an arid region with limited water supply \cite{TODO}.
+The primary drawback is the amount of water needed to grow 1 kg of produce. This is a measure of water efficiency which may not be a factor if we are growing in a humid region, but this becomes a major limitation if we are growing in an arid region with limited water supply.
 
 \subsection{Hydroponic}
+A modern approach to supply nutrients to the plants, this technology uses a water based solution including the nutrients that the cultivar in question requires.
+The roots of the cultivar are exposed directly to this solution.
+This removes the need for the traditional soil to supply nutrients to the plants.
 
+The hydroponic system can get nutrient in the water based solution from byproduct of other produce such as commercial fish farming, where the excrement from the fish may be used as a nutrient for the hydroponic system.
+
+This could be an option in the Faroe Islands, where there is large scale commercial fish farming, which could provide nutrients to a hydroponic farming strategy in the future.
+
+Hydroponics are also much more efficient in water usage than traditional soil farming, but for the humid regions this may be a non factor.
 
 \subsection{Aeroponic}
+Another modern approach to a nutrient system, this technology, much like hydroponics, also uses water more directly than the traditional methods.
 
+The aeroponic system sprays a mist of water directly on the roots of the cultivar, where even less water is needed, than the hydroponic system, for the same amount of produce \cite{aeroponic2}.
+
+Aeroponic may be of interest for more extreme need of efficiency, where space exploration and colonization is one of the key areas that aeroponic systems are being considered \cite{mars_agriculture}.
 
 \section{Computer Technologies}
 When we are building automated systems nowadays, we are usually using a computer.
@@ -406,10 +415,20 @@ All code used for our experiment is found in the attached .zip file.
 
 \section{Cupboard}
 
-\subsection{Pump system}
+The whole plant cultivation box should be seen as one whole unit. This should contain space for the plant, LED, fans, electronics, water pump, cables, Arduino Uno, Raspberry Pi 4 and all the sensors.
+Here I will discuss the Pump system, LEDS and the fans/ventilation system
 
+\subsection{Pump system}
+To pump water from the water tank to the plant itself we are going to be using a centrifuge pump. They are usually small and very cheap on aliexpress. We went for something that could run on 5 volts and the RP4 should be able to run it either directly via the GPIO pins or via a relay.
+We chose to use a relay for simplicity and safety reasons. Relays can allow a lot of voltage through, are cheap to come by and can switch using a very low voltage of 3.3 coming from the RP4.
+As mentioned before the RP4 uses scheduling to turn the water pump relay on and off. This in reality means that we every time the scheduler is running a job a GPIO pin will be active high. This active high at around 3.3 volts is what switches the relay and this is what turns on the water pump. The power to the pump that goes through the switch comes from the Arduino Uno 5v rails. This means that in reality we are using the 5volt USB power supply from the RP4 as our mean to power the water pump.
+
+TALK ABOUT HOW MUCH TIME WAS NEEDED TO PUMP ENOUGH AMOUNT OF WATER
+
+SHOW DIAGRAM
 
 \subsection{LEDs}
+
 
 
 \subsection{Fans}
