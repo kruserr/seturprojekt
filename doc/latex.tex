@@ -141,7 +141,7 @@ For sensor data we are going to use an Arduino Uno. We can very easily read seve
 We need some way to contain the plant, the LEDs, the ventilation and all the units and cables as one unit. We are going to use a single cubbard to contain the plant, the LED and on the back of the cubbard we are going to mount cables, RP4 and Arduino and ventilation fans. The idea is to have everything as one unit.
 
 \section{Ventilation}
-The ventilation is made up of two 120mm PC style fans that support PWM and DC. The fans are rated to (INSERT REFERENCE HERE)
+The ventilation is made up of two 120mm PC style fans that support PWM and DC.
 We then drill two holes in the back of the cubbard for ventilation for air going in and out of the cubbard. The fans are mounted aligned with the ventilation holes. The fans are connected in serial and are fed 12 volts DC. This in turn means that the fans should spin in half capacity. This improves noise because they should be running at 50 percent rotation. This is very important because the temperature is dictated by the ventilation's ability to move air in and out of the box to combat how the LEDS dissipate heat. Temperature and humidity is a factor in how the plants are going to thrive.
 
 \section{Web Service}
@@ -161,6 +161,8 @@ In the theory chapter, we will be looking at what makes our approach to the expe
 We are first going to look at photosynthesis, which is needed for plants to grow, then we are going to look at the computer technologies that may be of interest for the experiment.
 
 \section{Photosynthesis}
+Photosynthesis in plants is the basis for all life on Earth.
+
 Photosynthesis is a process which turns light energy into chemical energy. For plants this energy is sugar, which the plant uses to fuel itself, regenerate cells and more.
 
 For photosynthesis to take place for a plant, there has to be a source of water, light, $CO_2$ and nutrients.
@@ -564,25 +566,21 @@ For control of our digital electric components from the Pi, we use Python as the
 This includes reading serial data from our Arduino, and sending control signals to our lighting and pump system. This also includes sending the data from the Arduino to the web UI.
 
 We use the Flask python library as a programmable web server, which enables us to specify API endpoints that handle HTTP requests \cite{flask}.
+We use Flask to expose a number of endpoints to our Web UI, to pass sensor data and to allow the web UI to control the pump and lighting.
 
-We use Flask to expose a number of endpoints to our Web UI, to pass sensor data and to allow the Web UI to control the pump and lighting.
-
-\bigskip
-
-We use the gpiozero library to send 3.3v control signals to our relay drivers, which supply 5V to the pump, and 12V to the LEDs.
-
+We use the gpiozero library to send 3.3v control signals to our relay drivers, which supply 5V to the pump, and 12V to the LEDs respectively.
 The relay driver for the LEDs is connected to the GPIO pin 19, and the relay driver for the pump is connected to the GPIO pin 26.
 
-\bigskip
-
-We use APScheduler as a job scheduling library which allows us to run tasks at set intervals, using the common UNIX crontab to define these intervals \cite{apscheduler}.
-
+We use APScheduler as a job scheduling library which allows us to run tasks at set intervals, using the common UNIX crontab syntax to define these intervals \cite{apscheduler}.
 Flask exposes 4 endpoints which allows the UI to control the crontab and the second interval for both the lighting and the pump.
 
-We use threads to allow us to control the pump and lighting systems, while simultaneously reading data over the serial connection and also sending that data to the web UI, and also allowing the UI to reconfigure jobs.
+We use threads to allow us to control the pump and lighting systems, while simultaneously reading data over the serial connection and sending that data to the web UI, and allowing the UI to reconfigure jobs.
 
 \subsection{Web user interface}
 The web user interface (UI) is a simple proof of concept for the controls needed to operate our simulated use case scenario.
+
+The UI serves as a dashboard for the cupboard, where live graphs for temprature and humidity is shown for the last 5 minutes.
+The UI also lets the user operate the schedules and intervals of both the pump and lighting system. This is achieved through 4 simple text input boxes, with input validation to ensure that the user will provide a good input.
 
 For our UI we use JavaScript as the programming language.
 
