@@ -1,0 +1,566 @@
+\documentclass[a4paper,12pt,twoside,openright,titlepage]{book}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{latexsym}
+
+\usepackage{graphicx}
+\usepackage[pdftex]{hyperref}
+
+\usepackage{upquote,textcomp} % regular code quotes
+\usepackage{parskip} % Newline instead of tab in next line
+\usepackage{lmodern} % Latin Modern Font
+\usepackage{sfmath} % Equation Sans-Serif Font
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Bulleted list Settings
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\renewcommand{\labelitemi}{$\bullet$}
+\renewcommand{\labelitemii}{$\circ$}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Use Sans Font as Default
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\renewcommand{\familydefault}{\sfdefault}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Set Matrix Vertical Spacing
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\renewcommand*{\arraystretch}{1.5}
+
+\newenvironment{dedication}
+{\cleardoublepage\addcontentsline{toc}{chapter}{Dedication}\null\vfill\begin{flushright}}
+{\end{flushright}\vfill\null}
+
+\newenvironment{abstract}
+{\cleardoublepage\addcontentsline{toc}{chapter}{Abstract}\null\vfill\begin{center}
+\bfseries\abstractname\end{center}}
+{\vfill\null}
+
+\title{KT Verkætlan}
+\author{Petur Harald í Kálvalíð & Ragnar Kruse}
+\date{Januar 5, 2021}
+
+\begin{document}
+
+\frontmatter
+\maketitle
+
+\cleardoublepage\addcontentsline{toc}{chapter}{Contents}
+\tableofcontents
+
+\mainmatter
+
+\chapter{Introduction}
+In this project we will take a look at growing plants in more challenging environments. We will be looking at what makes a plant grow, and what we can do to to make this happen in a controlled environment.
+
+We will make a proof of concept experiment in the form of a practical component, which simulates a limited lighting environment, with controlled lighting and controlled watering for a plant.
+
+\chapter{Aim of project}
+The aim of the project is to find a way to automate the cultivation of plants in a controlled environment using off-the-shelf components, electronics and a bit of programming. When built, we will log data and look how well the plant cultivator performed vs cost of materials etc.
+Based on the data and calculations we word a conclusion if we succeeded to build the plant cultivator and what we managed to achieve.
+
+\chapter{Objectives}
+In order to complete this assignment, we made a few objectives.  These objectives were:
+
+\begin{itemize}
+\item build a main controller to control the plant cultivator as a unit
+\item 
+build a sensor readout unit to give the main controller sensor data via serial over USB.
+\item 
+build a box for the plant cultivator. This should contain the plant, the LED lights, the ventilation and all the electrical components.
+\item 
+build a ventilation system.
+\item 
+build a web-service to visualize collected data
+\item 
+assemble everything 
+\item 
+analyze data and write conclusion
+\end{itemize}
+
+\section{Main Controller Unit}
+
+We are going to use a Rasbperry Pi 4 as our MCU. 
+The MCU will read sensor data coming from the Sensor Readout Unit (SRU).
+The MCU should read sensor data continuously and based on the sensor data and what configuration is loaded during startup it should control the box by turning on/off lights, ventilation and water pump.
+
+The MCU also hosts a local server where a user can retrieve the sensor data being sent from the SRU. Basically we can see how the box is doing.
+We should also have the option to change schedule of the lights/ventilation and water pump. This should all be done via a browser for ease of use.
+
+\section{Sensor Readout Unit}
+
+For sensor data we are going to use an Arduino Uno. We can very easily read several sensors in a loop and send the data out to the raspberry Pi. The idea is to use a USB cable between the Raspberry Pi 4 and the Arduino Uno board. Not only will the RP4 power the Uno board but it will also be able to receive data via serial through the USB cable. The idea is to have an array of sensor data sent via serial to '/dev/ttyASM0' on the RP4 every 5 seconds and updates when sensor data is valid.
+
+\section{The Box}
+
+We need some way to contain the plant, the LEDs, the ventilation and all the units and cables as one unit. We are going to use a single cubbard to contain the plant, the LED and on the back of the cubbard we are going to mount cables, RP4 and Arduino and ventilation fans. The idea is to have everything as one unit.
+
+\section{Ventilation}
+The ventilation is made up of two 120mm PC style fans that support PWM and DC. The fans are rated to (INSERT REFERENCE HERE)
+We then drill two holes in the back of the cubbard for ventilation for air going in and out of the cubbard. The fans are mounted aligned with the ventilation holes. The fans are connected in serial and are fed 12 volts DC. This in turn means that the fans should spin in half capacity. This improves noise because they should be running at 50 percent rotation. This is very important because the temperature is dictated by the ventilation's ability to move air in and out of the box to combat how the LEDS dissipate heat. Temperature and humidity is a factor in how the plants are going to thrive.
+
+\section{Web Service}
+
+We need some way to visualize to the user the current state of the plant cultivator. Because of this we chose to use a web service using flask to handle requests from the user to what data is present. Simple http requests can get data and data can be visualized using a browser. Temperature and humidity is shown and it is also possible to change the schedule for lights/ventilation and water pump.
+
+\section{Assembly}
+
+Each seperate unit should be build and tested first on breadboards and finally somewhat be soldered to a PCB to eliminate errors and missing cables. Each part is then connected together via specially made cables that are similar to jumper cables. Sensors are stored inside the cubbard and wires are soldered and lead throuh holes in the cubbard to be connected to the Arduino. The raspberry pi then has cables going from the GPIO pins to relays that controll the LED/fans and water pump.
+
+\section{Data Analysis and Conclusion}
+After finishing assembly we are going to log data for around a day. We are going to log data while the lights are on and while the lights are off. When sufficient data has been collected we will determine if we managed to build a plant cultivation box or not. We can know this by analyzing the data and writing a conclusion.
+
+\chapter{Theory}
+In the theory chapter, we will be looking at what makes our approach to the experiment tick.
+
+We are first going to look at photosynthesis, which is needed for plants to grow, then we are going to look at the computer technologies that may be of interest for the experiment.
+
+\section{Photosynthesis}
+Photosynthesis is a process which turns light energy into chemical energy. For plants this energy is sugar, which the plant uses to fuel itself, regenerate cells and more.
+
+For photosynthesis to take place for a plant, there has to be a source of water, light, $CO_2$ and nutrients.
+When we are growing plants outside there is usually an abundance of these four.
+
+We get water from the rain directly, or later from rivers or clean ground water.
+
+We get light from the sun, which is the byproduct of a fusion reactor.
+
+We get $CO_2$ from the atmosphere, which is released by all organisms.
+
+We get nutrients from soil, which is a composition of organisms, minerals and liquids.
+
+\section{Water supply systems}
+To then grow plants indoor, we loose some of the earth given plant growth automation, namely the water supply.
+
+This then becomes a problem. Traditionally we would use a water container to intermittently supply the plant with. This soon becomes tedious as the number of grown plants increases.
+More modernly we would consider an automated water supply system.
+
+\subsection{Rain}
+The rain is the simplest and easiest way of watering our plants, for most parts of the world. For the more arid regions, rain may not be the best way of relying on water for our plants.
+
+The rain has provided the Earth with a reliable water supply for as long as humans have been on Earth and even longer back than so, and hopefully will continue to do so far into the future.
+
+The Problem with rain is that, it is impractical to control with current technology, and will provide water when it sees fit.
+Across the globe, there are varying volumes of water that comes from the skies. With different plants requiring different amounts of water, this makes it impractical to grow select plants in a region which may be considered to be too humid for that plant, or where the inverse may also true. This is where a more controlled water supply system may be of greater interest to use than the rain.
+
+\subsection{Water container}
+A traditional system for a controlled water supply system is the simple manual water container system.
+This is the most commonly used system for indoor plant growers. This system requires a fresh water supply, which technically comes from the rain.
+
+The system is labor intensive in a per plant measure, where a small number of plants is feasible for a single person to water in a timely manner, however a green house with hundreds or thousands of plants becomes impractical for this water supply system.
+
+\subsection{Pump based system}
+A more modern approach to a controlled water supply system, this system uses an electronic motor driven pump and a computer to control the pump. The pump is used to move water from a container of water to the plant with plastic or metal piping. In this system we would only have a single high powered pump capable of delivering enough pressure to deliver water to an entire green house, since having a single pump per plant would easily brake the promise of scalability of this system.
+
+The limitation of using a single pump for the entire green house has some limitations.
+If we are growing a singular type of produce, we can get away with synchronized watering cycles for all the plants, but this means that it is impractical to grow multiple types of produce which may require differing watering cycles, and the need for perhaps one pump per produce.
+
+\subsection{Valve based system}
+The valve based system fixes one of the crucial limitations with the pump based system, and that is of having a green house of multiple types of produce.
+
+This system uses a per plant electronically motorized valve connected to a computer, with metal piping that runs across the green house connected directly to pressurised fresh water supply.
+This gives us the ability to control the water supply per plant, and eliminates the need for a pump to provide pressure to the water.
+This means that we can now grow multiple types of produce in the same green house, and automate varying watering cycles with a computer.
+
+\section{Lighting systems}
+Some regions have limited access to direct sunlight, especially during the winter times.
+This is a factor in the Faroe Islands, where more tropical produce is unable to grow.
+But for a more extreme example, in Svalbard during the entire winter there is no daylight at all \cite{svalbard}.
+
+For these use cases we may consider a more modern controllable lighting system, but if we can it would be preferable to use the sun.
+
+\subsection{Sun}
+The tried and tested lighting system that all life on Earth relies on.
+The sun provides a free source of light energy in the form of photonradiation which come from the byproduct of the fusion reaction that takes place inside the sun \cite{abhyankar}.
+
+Most plants thrive with direct sunlight, but some plants prefer a specific wavelength mixture and a specific light cycle to grow optimally.
+
+The same also holds true for the sun as with the rain, the sun is impractical to control.
+
+\subsection{LED lighting}
+LEDs have really took of the last few years, and they are starting to appear in every possible use for lighting, due to their efficiency.
+For growing plants they are also excellent, since most of LEDs give a good mixture of the red, green and blue color spectrum, and ultraviolet LEDs are also an option.
+A mixture of multiple types of LEDs are also an option.
+Another point for the LED is that they are usually operated with 12V, which gives a simple low-power relay or transistor driver a good interface to a computer.
+
+\section{Nutrient systems}
+The nutrients that are fed to the plant need not come from traditional soil.
+Modern agriculture has presented technologies such as the hydroponic nutrient system.
+These modern systems allow for a more efficient use of water per kg of produce.
+According to Ziegler, "to produce a kilogram of tomatoes using traditional land
+cultivation requires 200 to 400 liters of water, hydroponics requires about 70 liters,
+aeroponics utilizes only about 20 liters" \cite{aeroponic}.
+
+\subsection{Soil}
+The tried and tested nutrient system is the soil. This system relies on the degradation of organic materials which decompose over a long time. This system is perfect for most plants, but when used for modern agriculture there are some drawbacks to this system.
+
+The primary drawback is the amount of water needed to grow 1 kg of produce. This is a measure of water efficiency which may not be a factor if we are growing in a humid region, but this becomes a major limitation if we are growing in an arid region with limited water supply.
+
+\subsection{Hydroponic}
+A modern approach to supply nutrients to the plants, this technology uses a water based solution including the nutrients that the cultivar in question requires.
+The roots of the cultivar are exposed directly to this solution.
+This removes the need for the traditional soil to supply nutrients to the plants.
+
+The hydroponic system can get nutrient in the water based solution from byproduct of other produce such as commercial fish farming, where the excrement from the fish may be used as a nutrient for the hydroponic system.
+
+This could be an option in the Faroe Islands, where there is large scale commercial fish farming, which could provide nutrients to a hydroponic farming strategy in the future.
+
+Hydroponics are also much more efficient in water usage than traditional soil farming, but for the humid regions this may be a non factor.
+
+\subsection{Aeroponic}
+Another modern approach to a nutrient system, this technology, much like hydroponics, also uses water more directly than the traditional methods.
+
+The aeroponic system sprays a mist of water directly on the roots of the cultivar, where even less water is needed, than the hydroponic system, for the same amount of produce \cite{aeroponic2}.
+
+Aeroponic may be of interest for more extreme need of efficiency, where space exploration and colonization is one of the key areas that aeroponic systems are being considered \cite{mars_agriculture}.
+
+\section{Computer Technologies}
+When we are building automated systems nowadays, we are usually using a computer.
+The computer will effortlessly control the electric motors that are present in modern water supply systems.
+
+\subsection{Controlling an Electric Motor}
+The simplest way to control an electric motor, is to connect it directly to the computer. But this is easier said than done.
+
+A regular desktop or laptop computer that most everyone uses, does not easily connect up to a electric motor. We need some sort of a interface.
+
+A single board computer is a small computer where all components are on a single board, as the name suggests.
+This means that the computer can be extremely compact, and in fact most single board computers will fit in your pocket.
+What is interesting about this is that it may offer a cheaper alternative to a computer compared to your expensive laptop or desktop computers, and they also easily fit inside small enclosures and back of other electronics.
+
+Why all this is relevant is the development board, a cheap single board computer that easily lends it self to develop electronics that rely on a computer.
+
+An example of such a board is the Raspberry Pi, an inexpensive single board computer.
+The Raspberry Pi is also a excellent development board for electronics, since it has an interface that we can connect our electric motors up to, the General Purpose Input Output (GPIO).
+
+GPIO is a collection of electrical pins, that on the Raspberry Pi can do anything from carrying a serial signal, reading digital sensor data, and sending digital high signals to drive a electric motor.
+
+But what happens when we now connect our electric motor up to our Pi, the motor does nothing.
+The reason behind this is that the Pi can only deliver about 3.3V 16mA from each pin \cite{pi_pin_current}, and for a typical pump electric motor we need upwards of 4.5V 180mA \cite{aliexpress_pump}.
+
+To make this work, we need a simple electrical circuit, called a driver. There are several types of drivers but the simplest is the relay driver.
+The relay driver has a control signal, which in this case will be 3.3V 16mA.
+The control signal opens a relay and lets a supply voltage flow through.
+The supply voltage can be anything that will carry the voltage and current that the specification demands, in this case 4.5V 180mA for a motorized pump. This could as an example be 3 AA 1.5V Alkaline batteries in series, which would give us 4.5V and about 1A \cite{battery_current}.
+
+The end result of this circuit is that with a low powered 3.3v 16mA control signal from a GPIO pin on a Raspberry Pi, we are able to control a supply voltage that is capable of delivering 4.5v 180mA to the pump, and thus the pump will function and be controllable from the Raspberry Pi with general purpose programming languages.
+
+\subsection{Programming Languages}
+The most popular general purpose programming languages according to the 2020 stackoverflow survey, are JavaScript and Python \cite{stackoverflow_survey}.
+
+These programming languages fall into the category of high level modern programming languages, with an easy to learn and read syntax, dynamic typing, memory safety, garbage collection and a interpreter. 
+The often fact of compiled languages, where the phrase: "but it works on my computer", is all but common speech, with these languages the simplicity of the interpreter makes it work equally across every major operating system that is in use today.
+This makes these programming languages ideal for the learner, where the only effort the developer focuses on is solving the problem, not debugging a memory leak.
+
+Both programming languages also future a robust package manager, that has contributed to a flourishing community of 3rd party libraries that solve almost all of the common reoccurring problems in modern software. The current culture is a greater focus on gluing these libraries together, rather than reinventing the wheel every time a new project is started.
+
+These programming languages have in recent years made their way to the professional scene as well. With computers becoming more powerful and cheaper, memory management and requiring a compiled language is a thing of the past, and for the modern developer, this is usually no longer a concern.
+The modern developer is more concerned on shipping a product on time to the customer.
+
+\subsection{Python}
+Python is a house hold programming language that has a lot to offer the modern developer. Python is a great language to quickly realise a prototype, where time to market is of the utmost concern.
+Python has one of the wealthiest 3rd party library repositories of any programming languages, where the average quality is production ready. This makes it extremely fast to glue libraries together and ship a prototype.
+
+Python is extensively used for controlling electronics, where libraries that can read serial data and libraries that can control GPIO pins are easy to come by. This makes Python an ideal choice for a controller of the drivers needed to operate electric motors.
+
+\bigskip
+
+One of the widely used serial libraries in python is the pyserial library \cite{pyserial}.
+
+an example of how to read a serial stream using pyserial,
+
+\begin{verbatim}
+ser = serial.Serial(path, 9600, timeout = 1)
+ser.flush()
+row = ser.readline().decode('utf-8').rstrip().split(',')
+\end{verbatim}
+
+\bigskip
+
+A Python library to work with GPIO is gpiozero \cite{gpiozero}.
+gpiozero makes it easy to work with GPIO pins, where the pins can be controlled with a LED object, where the functions .on() and .off(), will send a 3.3v digital signal or a 0v digital signal respectively.
+
+\bigskip
+
+A Python library that serves as a programmable web server is the Flask library. Flask is a micro framework, where it is possible to create reasonably advanced web applications, but it also has a simpler functionality where with just a few lines of code a programmable web server is up and running.
+This makes it easy to connect a JavaScript front end up to a Python back end through a number of API endpoints, where data is then sent back end front through.
+
+An example of how to expose an API endpoint using Flask,
+\begin{verbatim}
+@app.route('/api/obs', methods=['GET'])
+def getData():
+    return json.dumps(obs, indent = 2, default = str)
+\end{verbatim}
+
+\bigskip
+
+APScheduler is a Python library that allows us to schedule jobs, to be run at intervals. These jobs can be anything that fits inside a python function, where routines can be run at set intervals. This would allow us to set a schedule for a water pump to water the plant lets say once every 14 days at 16:00.
+This would be achived by configuring APScheduler to run a job using the UNIX crontab syntax.
+
+\newpage
+
+An example of a crontab expression to run a task at 16:00 every 14 days,
+\begin{verbatim}
+0 16 */14 * *
+\end{verbatim}
+
+Another example of a crontab expression to run a task every minute,
+\begin{verbatim}
+* * * * *
+\end{verbatim}
+
+\bigskip
+
+Threading allows us to run multiple tasks concurrently on the same CPU, thus effectively allowing us to run multiple things at the same time in the same program.
+This is essential when building controllers, since we want things to happen seemingly at the same time, where sensor data is being read, and that data is processed which then runs the motor on the pump based on this data that is processed.
+This would also allow us to run a web server while at the same time control the pump, and perhaps also change in runtime to adjust a user supplied configuration that will change the profile of the watering schedule.
+
+\bigskip
+
+\subsection{JavaScript}
+JavaScript is one of the most exciting trends in programming languages today.
+The reason being is that not quite so recently back in 2009, a new technology was introduced, Node.js \cite{nodejs_release}.
+Previously JavaScript had been a web browser client side exclusive programming language, but it was now possible to run that same code on a server. That in of it self is not exemplary, but what there was to come is.
+
+The talk of full stack web development was just starting, previously unheard of. The reality that now it was possible to write websites in a single programming language both on the server and client was slowly setting in. At the time one of the most used web technology stacks was, Linux Apache MySQL PHP (LAMP), where the programming language was PHP \cite{2009_programming}. This meant that to develop websites back in 2009, it was usually necessary to have, a dedicated backend developer that knew PHP, a dedicated frontend developer that knew JavaScript and a dedicated database developer that knew SQL.
+
+With full stack web development, there is a single programming language being used. Since JavaScript was already a requirement for web development, it was destined to become the singular programming language used. Today it is possible to write JavaScript on the server using Node.js, make queries against databases by writing JavaScript instead of SQL using a Object Relational Mapper (ORM), and finally write the same JavaScript on the client that we were already doing back in the day. One programming language for the entire web project. This of course means that today, instead of having close to a requirement on hiring 3 developers, we can get away with a single developer that does it all.
+
+Another vision was slowly developing, a new approach to build web User Interfaces (UI), a focus on developing reusable component based UIs.
+Where all functionality of a web page were abstracted into a component, what could be thought of as a class in Object Oriented Programming (OOP).
+This allows a developer to develop components instead of web pages, and then compose these components together to then create a web page.
+This is a huge shift in paradigm, where before every web page was in of its own, where functionality was specific and baked thoroughly into that one web page. We could now implement the functionality once, and reuse this component across all the web pages that we were maintaining.
+
+Another advancement that aimed to make web pages feel more like a native app on your phone, the Single Page Application (SPA). This is a design for web applications that only loads the page once, and then never reloads. When the user clicks on a link, that link would normally send the user off to a new page, triggering a reload, but in a SPA that link is captured in JavaScript and a router will determine where it is destined, and will render that page as if it functioned like a normal link, but the user never reloaded the page. This makes clicking a link so fast that the user will not notice that any loading took place, since all that loading took place when the user initially loaded the first page.
+This makes the web application feel like a native app, where everything happens in a snap of a finger.
+
+A framework for building these web applications was released open source by facebook in mid 2013 \cite{react_release}.
+Developers could now rely on a standardized way to develop their component based UIs for their SPA.
+
+Further advancements in the full stack vision were later achieved in 2016, with a project called Next.js \cite{nextjs_release}.
+Next.js is a meta framework for the react framework, that allows the developer to write react components, that can execute code on both the client and server. Next.js makes it effortless and highly coherent to program code that runs both on the client and server, in a single file. We can now preprocess the HTML on the server, where we fetch data from the database or deliver a temporary low resolution image, where we then process the client side specific logic after, where we incrementally fetch new data from the database or fetch a suitable resolution image for the client.
+
+This concludes the full stack vision, where a single functionality of the web page can be encapsulated into a single component, and moved from project to project. The only thing that the developer need know is JavaScript, the paradigm of the component based design and the Next.js technology.
+
+\bigskip
+
+An example of a simple React component in Next.js,
+
+\bigskip
+
+index.js
+
+\begin{verbatim}
+import React from 'react';
+
+class Demo extends React.Component
+{
+  render()
+  {
+    return (
+      <h1>Demo {this.props.passData}</h1>
+    );
+  }
+}
+
+export default class Home extends React.Component
+{
+  render()
+  {
+    let first = 1;
+    let second = 2 * first;
+
+    return (
+      <div>
+        <Demo passData={first} />
+        <Demo passData={second} />
+      </div>
+    );
+  }
+}
+\end{verbatim}
+
+\bigskip
+
+This would render the HTML,
+
+\begin{verbatim}
+<div>
+  <h1>Demo 1</h1>
+  <h1>Demo 2</h1>
+</div>
+\end{verbatim}
+
+\chapter{Experiment}
+For our experiment we decided to do a proof of concept, of a limited lighting environment with controlled lighting and controlled watering.
+
+To simulate the environment we have repurposed an old cupboard. The cupboard has a door which when closed lets close to no light inside to the plant.
+Inside the cupboard we have installed LED lighting, and a pump system to water a single plant.
+We have also installed fans to keep the micro climate at a controlled temperature and humidity.
+
+We use a Raspberry Pi 4 as our computer.
+
+We use an Arduino UNO as our micro controller to collect all data from our analog and digital sensors, and then send this data through the serial connection over to the Raspberry Pi 4.
+
+The data we are collecting are from a temperature and humidity sensor, to survey the micro climate inside the cupboard for our simulated use case of a limited lighting environment.
+
+Peripheral sensors include a photoresistor to log when lighting is turned on.
+
+All code used for our experiment is found in the attached .zip file.
+
+\section{Cupboard}
+
+The whole plant cultivation box should be seen as one whole unit. This should contain space for the plant, LED, fans, electronics, water pump, cables, Arduino Uno, Raspberry Pi 4 and all the sensors.
+Here I will discuss the Pump system, LEDS and the fans/ventilation system
+
+\subsection{Pump system}
+To pump water from the water tank to the plant itself we are going to be using a centrifuge pump. They are usually small and very cheap on aliexpress. We went for something that could run on 5 volts and the RP4 should be able to run it either directly via the GPIO pins or via a relay.
+We chose to use a relay for simplicity and safety reasons. Relays can allow a lot of voltage through, are cheap to come by and can switch using a very low voltage of 3.3 coming from the RP4.
+As mentioned before the RP4 uses scheduling to turn the water pump relay on and off. This in reality means that we every time the scheduler is running a job a GPIO pin will be active high. This active high at around 3.3 volts is what switches the relay and this is what turns on the water pump. The power to the pump that goes through the switch comes from the Arduino Uno 5v rails. This means that in reality we are using the 5volt USB power supply from the RP4 as our mean to power the water pump.
+
+TALK ABOUT HOW MUCH TIME WAS NEEDED TO PUMP ENOUGH AMOUNT OF WATER
+
+SHOW DIAGRAM
+
+\subsection{LEDs}
+
+
+
+\subsection{Fans}
+
+
+\section{Arduino UNO}
+The Ardunio UNO is connected to the Pi over a Universal Serial Bus (USB) connection.
+We use 5V USB from the Pi, to power the Arduino.
+
+\subsection{DHT11}
+The temperature and humidity sensor DHT11, gives a digital signal which is then decoded using the DHT Arduino library \cite{dht}.
+
+It is connected to the Arduino using diagram \ref{diagram1}.
+
+\begin{figure}[h]
+    \includegraphics[width=\linewidth]{Arduino-DHT11-Tutorial-3-Pin-DHT11-Wiring-Diagram-768x391.png}
+    \caption{DHT11 connected to an Arduino UNO \cite{dht}.}
+    \label{diagram1}
+\end{figure}
+
+\subsection{Photoresistor}
+The photo resistor changes resistance based on available light.
+This then gives an analog signal measurable as changes in voltage by the Analog to Digital Converter (ADC) in the Arduino.
+
+It is connected to the Arduino using diagram \ref{diagram2}.
+
+\begin{figure}[h]
+    \includegraphics[width=\linewidth]{arduino_photoresistor.png}
+    \caption{Photoresistor connected to an Arduino UNO \cite{photoresistor_arduino}}
+    \label{diagram2}
+\end{figure}
+
+\subsection{Serial}
+The Arduino is capable of reading and writing data to the Serial object in the standard Arduino library, which then sends data over a serial protocol to the USB connection that is found on the back of the Arduino.
+This data is then sent to the Pi, as a single line CSV.
+
+An example of this data is the following
+TODO(insert example of arduino CSV data here)
+\begin{verbatim}
+\end{verbatim}
+
+\section{Raspberry Pi 4}
+The Raspberry Pi 4 is a single board computer, which has a ARM CPU.
+It runs Raspbian, a Debian based Linux Distribution.
+This allows us to run all general purpose code on this small portable low powered computer.
+
+The Pi handles all the processing of the data that is delivered from the Arduino, and also handles controlling the lighting and the pump.
+The Pi also is the web server that delivers the web UI.
+
+We use a 5V power supply for the Raspberry PI 4.
+
+\subsection{Python}
+For control of our digital electric components from the Pi, we use Python as the programming language.
+This includes reading serial data from our Arduino, and sending control signals to our lighting and pump system. This also includes sending the data from the Arduino to the web UI.
+
+We use the Flask python library as a programmable web server, which enables us to specify API endpoints that handle HTTP requests \cite{flask}.
+
+We use Flask to expose a number of endpoints to our Web UI, to pass sensor data and to allow the Web UI to control the pump and lighting.
+
+\bigskip
+
+We use the gpiozero library to send 3.3v control signals to our relay drivers, which supply 5V to the pump, and 12V to the LEDs.
+
+The relay driver for the LEDs is connected to the GPIO pin 19, and the relay driver for the pump is connected to the GPIO pin 26.
+
+\bigskip
+
+We use APScheduler as a job scheduling library which allows us to run tasks at set intervals, using the common UNIX crontab to define these intervals \cite{apscheduler}.
+
+Flask exposes 4 endpoints which allows the UI to control the crontab and the second interval for both the lighting and the pump.
+
+We use threads to allow us to control the pump and lighting systems, while simultaneously reading data over the serial connection and also sending that data to the web UI, and also allowing the UI to reconfigure jobs.
+
+\subsection{Web User Interface}
+The Web User Interface (UI) is a simple proof of concept for the controls needed to operate our simulated use case scenario.
+
+For our UI we use JavaScript as the programming language.
+
+This gives us huge flexibility in terms of running things both on client and the server using Next.js.
+
+We use the JavaScript library Chart.js, to render our charts in a usable and presentable fashion.
+
+We use the Fetch API as the HTTP client to fetch data from our python APIs to our Next.js backend, and then preprocess that data to deliver it with the first http request to the client, and the client then later uses the Fetch API to incrementally fetch new data from the Next.js backend API.
+
+\chapter{Data Analysis}
+
+\chapter{Discussion}
+
+
+\section{DHT11 error when operating pump}
+When the pump relay opens, the temperature and humidity sensor fails to read.
+
+At this point we speculate that some noise from the pump is interfering with the DHT11 sensor, or that the pump draws too much current from the Arduino, such that there is not enough current for the DHT11 sensor, but we do not have any data to back this hypothesis up.
+
+The exact cause is unknown at this point, and will not be investigated further since the operation of the pump rarely exceeds a 10s interval. We will allow the temperature and humidity sensor to read errors for the duration when the pump is running.
+
+This is filtered out of the data when the data is then displayed in the graphs on the web UI, so it has little to no effect on the end result of the system.
+
+\section{Design}
+We use the simpler single pump per plant water supply system, since we have a single plant.
+We could had used the more complex but arguably better design of the valve based system, where we need not worry about water pressure. But for this proof of concept the pump system was more than adequate.
+
+We use LEDs, since they are 12V and thus are easily controlled by our computer over a relay driver with a 3.3v control signal and 12V supply for the LEDs.
+
+\section{DHT11}
+The temperature and humidity sensor is a digital signal and thus would be possible to connect directly to the Pi, but in our initial research we concluded that it was easiest to use the DHT arduino library, and read the sensor on the Arduino, and then send the data over serial to our Pi. If we were not using an analog photoresistor we would have pursued the possibility of running the DHT11 directly of the Pi, since then we could get away with only using the Pi and not using the Arduino.
+
+\section{React}
+The fundamental need for a UI framework in JavaScript is the need to build reusable component based UIs.
+
+Perhaps in this case you could argue that we do not require the ability to build a component based UI, but then again establishing a consistent base for every project, where each project can borrow components from each other, makes it easy to jump start a new project.
+
+There are a number of JavaScript UI frameworks including React, Angular and Vue.js.
+For our use case, where we need a frequently updating chart with data, we use React due to the built in functionality to only render what has been changed in the component state, which will give us much better performance for our charts.
+
+We could absolutely have went with any of the other frameworks, or even use pure JavaScript, to have achieved the same functionality of the resulting UI.
+
+But since we already have competency working with React, we would have used more time to achieve the same result with other options, and thus using React for our use case was a reasonable choice for us.
+
+\chapter{Conclusion}
+In this project, we have shown that it is possible to create a simulated micro climate that resembles that of a limited lighting environment, with controlled lighting and controlled watering.
+
+We have done research on what makes a plant grow, the essentials of life on earth, and we have used our previous knowledge and skills learned throughout the process of our university degree, to make an experiment, in the form of a practical component, which executes the functions that we intended it to do.
+
+We have collected data and analyzed that data, and can conclude that it is possible to grow a plant in the micro climate that we have presented here.
+
+\appendix
+\cleardoublepage\addcontentsline{toc}{chapter}{Appendices}
+\chapter{Appendix}
+\backmatter
+\cleardoublepage\addcontentsline{toc}{chapter}{Bibliography}
+\bibliographystyle{unsrt}
+\bibliography{references}
+
+\end{document}
