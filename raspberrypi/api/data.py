@@ -17,18 +17,6 @@ from apscheduler.jobstores.base import JobLookupError
 
 app = flask.Flask(__name__)
 
-# class Observations:
-#     instance = None
-
-#     def __init__(self):
-#         self.obs = []
-
-#     @staticmethod
-#     def getInstance():
-#         if Observations.instance is None:
-#             Observations.instance = Observations()
-#         return Observations.instance
-
 obs = []
 
 class Scheduler:
