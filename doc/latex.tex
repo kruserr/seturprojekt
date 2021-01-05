@@ -1,60 +1,136 @@
-\documentclass[a4paper,12pt,twoside,openright,titlepage]{book}
+\documentclass[12pt,a4paper,oneside]{book}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Global Variables
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\newHeadline}{University of the Faroe Islands} % Change Headline
+\newcommand{\newTitle}{Project} % Change Title
+\newcommand{\newSubject}{Computer Science} % Change Subject
+\newcommand{\newAuthor}{Petur Harald í Kálvalíð \& Ragnar Kruse} % Change Author
+\newcommand{\newKeywords}{5025.20 KT-verkætlan} % Change Keywords
+\newcommand{\newDate}{\today} % Change Date
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Import Packages
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[english]{babel}
-
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{latexsym}
-
 \usepackage{graphicx}
 \usepackage[pdftex]{hyperref}
-
 \usepackage{upquote,textcomp} % regular code quotes
 \usepackage{parskip} % Newline instead of tab in next line
 \usepackage{lmodern} % Latin Modern Font
 \usepackage{sfmath} % Equation Sans-Serif Font
 \usepackage{listings} % Code markup
-\usepackage{xcolor} % Code color
+\usepackage{geometry} % Change margins
 
-\definecolor{codegreen}{rgb}{0,0.6,0}
-\definecolor{codegray}{rgb}{0.5,0.5,0.5}
-\definecolor{codepurple}{rgb}{0.58,0,0.82}
-\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Lstlistings settings
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{color}
+\definecolor{green}{rgb}{0, 0.6 ,0}
+\definecolor{gray}{rgb}{0.33, 0.33, 0.33}
+\definecolor{white}{rgb}{1, 1, 1}
+\definecolor{burgendy}{rgb}{0.58, 0, 0.82}
+\definecolor{blue}{rgb}{0.05, 0.05, 0.75}
+\definecolor{yellow}{rgb}{1, 0.7, 0.25}
 
-\lstdefinestyle{mystyle}{
-    commentstyle=\color{codegreen},
-    keywordstyle=\color{magenta},
-    numberstyle=\color{codegray},
-    stringstyle=\color{codepurple},
-    breakatwhitespace=false,
-    breaklines=true,
-    keepspaces=true,
-    numbers=left,
-    showspaces=false,
-    showstringspaces=false,
-    showtabs=false,
-    tabsize=2
+\lstdefinelanguage{customLanguage}{
+    keywords={async, on, val, substring, pop, join, style, display, parentNode, getContext, clearRect, addColorStop, createLinearGradient, fillStyle, fillRect, target, parentElement, scrollY, scrollX, setTimeout, push, getComputedStyle, querySelector, marginTop, marginBottom, offsetTop, scroll, top, behavior, find, value, classList, add, remove, method, body, error, childNodes, addEventListener, history, scrollRestoration, onmouseenter, backButtonClicked, onmouseleave, length, preventDefault, location, href, split, then, JSON, parse, localStorage, setItem, stringify, await, fetch, json, module, exports, const, require, static, imagejpeg, getimagesize, list, Exception, file_get_contents, substr, strrpos, basename, imagecopyresampled, imagefill, imagecolorallocate, imagecreatetruecolor, imagecreatefrompng, imagecreatefromgif, imagecreatefromjpeg, mb_detect_encoding, strpos, \$_SERVER, move_uploaded_file, count, array_slice, implode, explode, strip_tags, bool, abstract, \$_FILES, \$_POST, include_once, isset, parse_str, die, null, php, <?, ?>, error_reporting, header_remove, mb_http_output, mb_internal_encoding, true, json_encode, json_decode, prepare, foreach, execute, fetchAll, empty, as, bindParam, ., echo, \$this, string, parent, __construct, false, final, private, public, protected, array, \$, window, onload, let, super, extends, class, constructor, document, getElementById, innerHTML, break, case, catch, continue, debugger, default, delete, do, else, finally, for, function, if, in, instanceof, new, return, switch, this, throw, try, typeof, var, void, while, with},
+    morecomment=[l]{//},
+    morecomment=[s]{/*}{*/},
+    morestring=[b]',
+    morestring=[b]",
+    sensitive=true
 }
 
-\lstdefinelanguage{JavaScript}{
-  keywords={break, case, catch, continue, debugger, default, delete, do, else, false, finally, for, function, if, in, instanceof, new, null, return, switch, this, throw, true, try, typeof, var, void, while, with, await, async, case, catch, class, const, default, do, enum, export, extends, finally, from, implements, import, instanceof, let, static, super, switch, throw, try},
-  morecomment=[l]{//},
-  morecomment=[s]{/*}{*/},
-  morestring=[b]',
-  morestring=[b]",
-  ndkeywords={class, export, boolean, throw, implements, import, this},
-  keywordstyle=\color{blue}\bfseries,
-  ndkeywordstyle=\color{darkgray}\bfseries,
-  identifierstyle=\color{black},
-  commentstyle=\color{purple}\ttfamily,
-  stringstyle=\color{red}\ttfamily,
-  sensitive=true
+\lstdefinelanguage{CSS}{
+  morekeywords={accelerator,azimuth,background,background-attachment,
+    background-color,background-image,background-position,
+    background-position-x,background-position-y,background-repeat,
+    behavior,border,border-bottom,border-bottom-color,
+    border-bottom-style,border-bottom-width,border-collapse,
+    border-color,border-left,border-left-color,border-left-style,
+    border-left-width,border-right,border-right-color,
+    border-right-style,border-right-width,border-spacing,
+    border-style,border-top,border-top-color,border-top-style,
+    border-top-width,border-width,bottom,caption-side,clear,
+    clip,color,content,counter-increment,counter-reset,cue,
+    cue-after,cue-before,cursor,direction,display,elevation,
+    empty-cells,filter,float,font,font-family,font-size,
+    font-size-adjust,font-stretch,font-style,font-variant,
+    font-weight,height,ime-mode,include-source,
+    layer-background-color,layer-background-image,layout-flow,
+    layout-grid,layout-grid-char,layout-grid-char-spacing,
+    layout-grid-line,layout-grid-mode,layout-grid-type,left,
+    letter-spacing,line-break,line-height,list-style,
+    list-style-image,list-style-position,list-style-type,margin,
+    margin-bottom,margin-left,margin-right,margin-top,
+    marker-offset,marks,max-height,max-width,min-height,
+    min-width,-moz-binding,-moz-border-radius,
+    -moz-border-radius-topleft,-moz-border-radius-topright,
+    -moz-border-radius-bottomright,-moz-border-radius-bottomleft,
+    -moz-border-top-colors,-moz-border-right-colors,
+    -moz-border-bottom-colors,-moz-border-left-colors,-moz-opacity,
+    -moz-outline,-moz-outline-color,-moz-outline-style,
+    -moz-outline-width,-moz-user-focus,-moz-user-input,
+    -moz-user-modify,-moz-user-select,orphans,outline,
+    outline-color,outline-style,outline-width,overflow,
+    overflow-X,overflow-Y,padding,padding-bottom,padding-left,
+    padding-right,padding-top,page,page-break-after,
+    page-break-before,page-break-inside,pause,pause-after,
+    pause-before,pitch,pitch-range,play-during,position,quotes,
+    -replace,richness,right,ruby-align,ruby-overhang,
+    ruby-position,-set-link-source,size,speak,speak-header,
+    speak-numeral,speak-punctuation,speech-rate,stress,
+    scrollbar-arrow-color,scrollbar-base-color,
+    scrollbar-dark-shadow-color,scrollbar-face-color,
+    scrollbar-highlight-color,scrollbar-shadow-color,
+    scrollbar-3d-light-color,scrollbar-track-color,table-layout,
+    text-align,text-align-last,text-decoration,text-indent,
+    text-justify,text-overflow,text-shadow,text-transform,
+    text-autospace,text-kashida-space,text-underline-position,top,
+    unicode-bidi,-use-link-source,vertical-align,visibility,
+    voice-family,volume,white-space,widows,width,word-break,
+    word-spacing,word-wrap,writing-mode,z-index,zoom},
+  morestring=[s]{:}{;},
+  sensitive,
+  morecomment=[s]{/*}{*/}
 }
 
-\lstset{style=mystyle}
+\lstset{
+  backgroundcolor=\color{white},
+  basicstyle=\footnotesize,
+  breakatwhitespace=false,
+  breaklines=true,
+  captionpos=t,
+  commentstyle=\color{green},
+  deletekeywords={...},
+  escapeinside={\%*}{*)},
+  extendedchars=true,
+  firstnumber=1,
+  keepspaces=true,
+  keywordstyle=\color{blue},
+  language=Octave,
+  morekeywords={*,...},
+  numbers=left,
+  numbersep=5pt,
+  numberstyle=\tiny\color{black},
+  rulecolor=\color{black},
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  stepnumber=1,
+  stringstyle=\color{burgendy},
+  tabsize=2,
+  title=\lstname,
+  identifierstyle=\color{yellow}
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Bulleted list Settings
@@ -72,23 +148,29 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \renewcommand*{\arraystretch}{1.5}
 
-\newenvironment{dedication}
-{\cleardoublepage\addcontentsline{toc}{chapter}{Dedication}\null\vfill\begin{flushright}}
-{\end{flushright}\vfill\null}
-
-\newenvironment{abstract}
-{\cleardoublepage\addcontentsline{toc}{chapter}{Abstract}\null\vfill\begin{center}
-\bfseries\abstractname\end{center}}
-{\vfill\null}
-
-\title{KT Verkætlan}
-\author{Petur Harald í Kálvalíð & Ragnar Kruse}
-\date{Januar 5, 2021}
-
 \begin{document}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Make Title Page
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\makeatletter
+\begin{titlepage}
+        \centering
+        \includegraphics[width=0.15\textwidth]{university_logo.png} \par \vspace{1cm}
+    {\scshape \LARGE \newHeadline \par}
+    \vspace{1cm}
+    {\scshape \Large \newKeywords \par}
+    \vspace{1.5cm}
+    {\huge \bfseries \newTitle \par}
+    \vspace{2cm}
+    {\Large \itshape \newAuthor \par}
+    \vfill
+    {\large \newDate \par}
+\end{titlepage}
+\makeatother
+
 \frontmatter
-\maketitle
+% \maketitle
 
 \cleardoublepage\addcontentsline{toc}{chapter}{Contents}
 \tableofcontents
@@ -101,11 +183,11 @@ In this project we will take a look at growing plants in more challenging enviro
 We will make a proof of concept experiment in the form of a practical component, which simulates a limited lighting environment, with controlled lighting and controlled watering for a plant.
 
 \chapter{Aim of project}
-The aim of the project is to find a way to automate the cultivation of plants in a controlled environment using off-the-shelf components, electronics and a bit of programming. When built, we will log data and look how well the plant cultivator performed vs cost of materials etc.
+The aim of the project is to find a way to automate the cultivation of plants in a controlled environment, using off-the-shelf components, electronics and a bit of programming. We will pursue this objective with the construction of a practical component. When assembled, we will log data and observe how the experiment unfolds.
 Based on the data and calculations we word a conclusion if we succeeded to build the plant cultivator and what we managed to achieve.
 
 \chapter{Objectives}
-In order to complete this assignment, we made a few objectives.  These objectives were:
+In order to complete this assignment, we made a few objectives.  These objectives are:
 
 \begin{itemize}
 \item build a main controller to control the plant cultivator as a unit
@@ -124,7 +206,6 @@ analyze data and write conclusion
 \end{itemize}
 
 \section{Main Controller Unit}
-
 We are going to use a Rasbperry Pi 4 as our MCU. 
 The MCU will read sensor data coming from the Sensor Readout Unit (SRU).
 The MCU should read sensor data continuously and based on the sensor data and what configuration is loaded during startup it should control the box by turning on/off lights, ventilation and water pump.
@@ -133,24 +214,25 @@ The MCU also hosts a local server where a user can retrieve the sensor data bein
 We should also have the option to change schedule of the lights/ventilation and water pump. This should all be done via a browser for ease of use.
 
 \section{Sensor Readout Unit}
-
-For sensor data we are going to use an Arduino Uno. We can very easily read several sensors in a loop and send the data out to the raspberry Pi. The idea is to use a USB cable between the Raspberry Pi 4 and the Arduino Uno board. Not only will the RP4 power the Uno board but it will also be able to receive data via serial through the USB cable. The idea is to have an array of sensor data sent via serial to '/dev/ttyASM0' on the RP4 every 5 seconds and updates when sensor data is valid.
+For sensor data we are going to use an Arduino Uno. We can very easily read several sensors in a loop and send the data out to the raspberry Pi. The idea is to use a USB cable between the Raspberry Pi 4 and the Arduino Uno board. Not only will the RP4 power the Uno board but it will also be able to receive data via serial through the USB cable. The idea is to have sensor data sent from the Arduino to the RP4 via serial every 2 seconds.
 
 \section{The Box}
-
-We need some way to contain the plant, the LEDs, the ventilation and all the units and cables as one unit. We are going to use a single cubbard to contain the plant, the LED and on the back of the cubbard we are going to mount cables, RP4 and Arduino and ventilation fans. The idea is to have everything as one unit.
+We need a way to mount the plant, LEDs, ventilation and all the units and cables. We are going to use a single cupboard, which is going to contain the plant and LEDs. On the back of the cupboard we are going to mount cables, RP4, Arduino and ventilation fans. The idea is to have everything as one unit.
 
 \section{Ventilation}
-The ventilation is made up of two 120mm PC style fans that support PWM and DC.
-We then drill two holes in the back of the cubbard for ventilation for air going in and out of the cubbard. The fans are mounted aligned with the ventilation holes. The fans are connected in serial and are fed 12 volts DC. This in turn means that the fans should spin in half capacity. This improves noise because they should be running at 50 percent rotation. This is very important because the temperature is dictated by the ventilation's ability to move air in and out of the box to combat how the LEDS dissipate heat. Temperature and humidity is a factor in how the plants are going to thrive.
+We need a ventilation system to be able to control the humidity and temperature inside the cupboard, to give the cultivar a preferable environment.
+We want to mount two 120mm 12V DC fans on the back of the cupboard.
+We are going to drill two 120mm holes in the back of the cupboard, to allow the fans to pull air through. The fans should be connected in series to a 12V DC power supply, which in turn should supply 6V each, such that the fans would not make undesirable noise.
 
 \section{Web Service}
+We need a way for the user to operate the box in a way that is simple and accessible. We want a web user interface that easily runs on any device, and would easily provide the user with the controls that they need.
 
-We need some way to visualize to the user the current state of the plant cultivator. Because of this we chose to use a web service using flask to handle requests from the user to what data is present. Simple http requests can get data and data can be visualized using a browser. Temperature and humidity is shown and it is also possible to change the schedule for lights/ventilation and water pump.
+All the functions that the cupboard has should have a control in the user interface, such that the user may configure the system to their liking and to suite the environmental preference of their cultivar.
+
+We also want a dashboard in which the user may see the current status of the system, in terms of temperature, humidity, etc.
 
 \section{Assembly}
-
-Each seperate unit should be build and tested first on breadboards and finally somewhat be soldered to a PCB to eliminate errors and missing cables. Each part is then connected together via specially made cables that are similar to jumper cables. Sensors are stored inside the cubbard and wires are soldered and lead throuh holes in the cubbard to be connected to the Arduino. The raspberry pi then has cables going from the GPIO pins to relays that controll the LED/fans and water pump.
+Each separate unit should be individually built and tested first on breadboards and finally soldered to a PCB to eliminate errors. Each part is then connected together via specially made cables that are similar to jumper cables. Sensors are to be stored inside the cupboard and wires soldered and lead through holes in the cupboard to be connected to the Arduino. The raspberry pi should have cables going from the GPIO pins to relays that control the LED/fans and water pump.
 
 \section{Data Analysis and Conclusion}
 After finishing assembly we are going to log data for around a day. We are going to log data while the lights are on and while the lights are off. When sufficient data has been collected we will determine if we managed to build a plant cultivation box or not. We can know this by analyzing the data and writing a conclusion.
@@ -158,11 +240,9 @@ After finishing assembly we are going to log data for around a day. We are going
 \chapter{Theory}
 In the theory chapter, we will be looking at what makes our approach to the experiment tick.
 
-We are first going to look at photosynthesis, which is needed for plants to grow, then we are going to look at the computer technologies that may be of interest for the experiment.
+We are first going to look at photosynthesis, which is the basis for all life on Earth, then we are going to look at the computer technologies that may be of interest for the experiment.
 
 \section{Photosynthesis}
-Photosynthesis in plants is the basis for all life on Earth.
-
 Photosynthesis is a process which turns light energy into chemical energy. For plants this energy is sugar, which the plant uses to fuel itself, regenerate cells and more.
 
 For photosynthesis to take place for a plant, there has to be a source of water, light, $CO_2$ and nutrients.
@@ -199,8 +279,8 @@ The system is labor intensive in a per plant measure, where a small number of pl
 \subsection{Pump based system}
 A more modern approach to a controlled water supply system, this system uses an electronic motor driven pump and a computer to control the pump. The pump is used to move water from a container of water to the plant with plastic or metal piping. In this system we would only have a single high powered pump capable of delivering enough pressure to deliver water to an entire green house, since having a single pump per plant would easily brake the promise of scalability of this system.
 
-The limitation of using a single pump for the entire green house has some limitations.
-If we are growing a singular type of produce, we can get away with synchronized watering cycles for all the plants, but this means that it is impractical to grow multiple types of produce which may require differing watering cycles, and the need for perhaps one pump per produce.
+Using a single pump for the entire green house has some limitations.
+If we are growing a singular type of produce, we can get away with synchronized watering cycles for all the plants, but this means that it is impractical to grow multiple types of produce which may require differing watering cycles.
 
 \subsection{Valve based system}
 The valve based system fixes one of the crucial limitations with the pump based system, and that is of having a green house of multiple types of produce.
@@ -218,7 +298,7 @@ For these use cases we may consider a more modern controllable lighting system, 
 
 \subsection{Sun}
 The tried and tested lighting system that all life on Earth relies on.
-The sun provides a free source of light energy in the form of photonradiation which come from the byproduct of the fusion reaction that takes place inside the sun \cite{abhyankar}.
+The sun provides a free source of light energy in the form of photon radiation which comes from the byproduct of the fusion reaction that takes place inside the sun \cite{abhyankar}.
 
 Most plants thrive with direct sunlight, but some plants prefer a specific wavelength mixture and a specific light cycle to grow optimally.
 
@@ -229,11 +309,12 @@ LEDs have improved greatly over the last few years. They are easy to come by and
 LEDs are excellent for growing plants since most of LEDs give a good mixture of the red, green and blue color spectrum, and ultraviolet LEDs are also an option.
 A mixture of multiple types of LEDs are also an option.
 Another point for the LED is that they are usually operated with 12V, which gives a simple low-power relay or transistor driver a good interface to a computer.
-For this experiment we are mainly focusing red and blue color spectrum.
+
+NASA conducted an experiment \cite{nasa_led} with growing plants in space using LEDS. According to their research they used blue and red color wavelengths.
 
 \section{Nutrient systems}
 The nutrients that are fed to the plant need not come from traditional soil.
-Modern agriculture has presented technologies such as the hydroponic nutrient system.
+Modern agriculture has presented technologies such as the hydroponic and aeroponic nutrient systems.
 These modern systems allow for a more efficient use of water per kg of produce.
 According to Ziegler, "to produce a kilogram of tomatoes using traditional land
 cultivation requires 200 to 400 liters of water, hydroponics requires about 70 liters,
@@ -249,7 +330,7 @@ A modern approach to supply nutrients to the plants, this technology uses a wate
 The roots of the cultivar are exposed directly to this solution.
 This removes the need for the traditional soil to supply nutrients to the plants.
 
-The hydroponic system can get nutrient in the water based solution from byproduct of other produce such as commercial fish farming, where the excrement from the fish may be used as a nutrient for the hydroponic system.
+The hydroponic system can get nutrient in the water based solution from byproduct of other produce, such as commercial fish farming where the excrement from the fish may be used as a nutrient.
 
 This could be an option in the Faroe Islands, where there is large scale commercial fish farming, which could provide nutrients to a hydroponic farming strategy in the future.
 
@@ -260,7 +341,7 @@ Another modern approach to a nutrient system, this technology, much like hydropo
 
 The aeroponic system sprays a mist of water directly on the roots of the cultivar, where even less water is needed, than the hydroponic system, for the same amount of produce \cite{aeroponic2}.
 
-Aeroponic may be of interest for more extreme need of efficiency, where space exploration and colonization is one of the key areas that aeroponic systems are being considered \cite{mars_agriculture}.
+Aeroponic systems may be of interest for more extreme need of efficiency, where space exploration and colonization is one of the key areas that aeroponic systems are being considered \cite{mars_agriculture}.
 
 One of the major drawbacks of the aeroponic system, is the fact that the root itself is suspended in mid air, above the nozzle of a pressurized water supply system. This means that if the water supply system were to fail due to a broken pipe, which also would be more likely to happen, due to the fact that the aeroponic system requires a pressurized water supply system, would render the system ineffective. A failure like this could make the root dry out in just about 2 hours, and would be a catastrophic failure for the whole aeroponic system, and potentially waste valuable resources which a colonization mission in space would potentially not tolerate \cite{mars_agriculture}.
 
@@ -271,7 +352,7 @@ The computer will effortlessly control the electric motors that are present in m
 \subsection{Controlling an electric motor}
 The simplest way to control an electric motor, is to connect it directly to the computer. But this is easier said than done.
 
-A regular desktop or laptop computer that most everyone uses, does not easily connect up to a electric motor. We need some sort of a interface.
+A regular desktop or laptop computer that most everyone today uses, does not easily connect up to a electric motor. We need some sort of a interface.
 
 A single board computer is a small computer where all components are on a single board, as the name suggests.
 This means that the computer can be extremely compact, and in fact most single board computers will fit in your pocket.
@@ -280,9 +361,12 @@ What is interesting about this is that it may offer a cheaper alternative to a c
 Why all this is relevant is the development board, a cheap single board computer that easily lends it self to develop electronics that rely on a computer.
 
 An example of such a board is the Raspberry Pi, an inexpensive single board computer.
-The Raspberry Pi is also a excellent development board for electronics, since it has an interface that we can connect our electric motors up to, the General Purpose Input Output (GPIO).
+The Raspberry Pi is a single board computer, which has an ARM CPU.
+It runs Raspbian, a Debian based Linux Distribution.
+This allows us to run all general purpose code on this small portable low powered computer.
+The Raspberry Pi is also an excellent development board for electronics, since it has an interface that we can connect our electric motors up to, the General Purpose Input Output (GPIO).
 
-GPIO is a collection of electrical pins, that on the Raspberry Pi can do anything from carrying a serial signal, reading digital sensor data, and sending digital high signals to drive a electric motor.
+GPIO is a collection of electrical pins, that on the Raspberry Pi can do anything from carrying a serial signal, reading digital sensor data, and sending digital high signals to drive an electric motor.
 
 But what happens when we now connect our electric motor up to our Pi, the motor does nothing.
 The reason behind this is that the Pi can only deliver about 3.3V 16mA from each pin \cite{pi_pin_current}, and for a typical pump electric motor we need upwards of 4.5V 180mA \cite{aliexpress_pump}.
@@ -297,7 +381,7 @@ The end result of this circuit is that with a low powered 3.3v 16mA control sign
 \subsection{Programming languages}
 The most popular general purpose programming languages according to the 2020 stackoverflow survey, are JavaScript and Python \cite{stackoverflow_survey}.
 
-These programming languages fall into the category of high level modern programming languages, with an easy to learn and read syntax, dynamic typing, memory safety, garbage collection and a interpreter. 
+These programming languages fall into the category of high level modern programming languages, with an easy to learn and read syntax, dynamic typing, memory safety, garbage collection and an interpreter.
 The often fact of compiled languages, where the phrase: "but it works on my computer", is all but common speech, with these languages the simplicity of the interpreter makes it work equally across every major operating system that is in use today.
 This makes these programming languages ideal for the learner, where the only effort the developer focuses on is solving the problem, not debugging a memory leak.
 
@@ -321,7 +405,7 @@ an example of how to read a serial stream using pyserial,
 \begin{verbatim}
 ser = serial.Serial(path, 9600, timeout = 1)
 ser.flush()
-row = ser.readline().decode('utf-8').rstrip().split(',')
+line = ser.readline().decode('utf-8').rstrip()
 \end{verbatim}
 
 \bigskip
@@ -331,14 +415,14 @@ gpiozero makes it easy to work with GPIO pins, where the pins can be controlled 
 
 \bigskip
 
-A Python library that serves as a programmable web server is the Flask library. Flask is a micro framework, where it is possible to create reasonably advanced web applications, but it also has a simpler functionality where with just a few lines of code a programmable web server is up and running.
-This makes it easy to connect a JavaScript front end up to a Python back end through a number of API endpoints, where data is then sent back end front through.
+A Python library that serves as a programmable web server is the Flask library. Flask is a micro framework, where it is possible to create reasonably advanced web applications, but it also has a simpler functionality, where with just a few lines of code a programmable web server is up and running.
+This makes it easy to connect a JavaScript front end up to a Python back end through a number of API endpoints, where data is then sent back and forth.
 
 An example of how to expose an API endpoint using Flask,
 \begin{verbatim}
-@app.route('/api/obs', methods=['GET'])
+@app.route('/api/obs')
 def getData():
-    return json.dumps(obs, indent = 2, default = str)
+    return json.dumps(obs)
 \end{verbatim}
 
 \bigskip
@@ -362,7 +446,7 @@ Another example of a crontab expression to run a task every minute,
 
 Threading allows us to run multiple tasks concurrently on the same CPU, thus effectively allowing us to run multiple things at the same time in the same program.
 This is essential when building controllers, since we want things to happen seemingly at the same time, where sensor data is being read, and that data is processed which then runs the motor on the pump based on this data that is processed.
-This would also allow us to run a web server while at the same time control the pump, and perhaps also change in runtime to adjust a user supplied configuration that will change the profile of the watering schedule.
+This would also allow us to run a web server while at the same time control the pump, and perhaps also in runtime adjust to a user supplied configuration that will change the profile of the watering schedule.
 
 \bigskip
 
@@ -381,7 +465,7 @@ This allows a developer to develop components instead of web pages, and then com
 This is a huge shift in paradigm, where before every web page was in of its own, where functionality was specific and baked thoroughly into that one web page. We could now implement the functionality once, and reuse this component across all the web pages that we were maintaining.
 
 Another advancement that aimed to make web pages feel more like a native app on your phone, the Single Page Application (SPA). This is a design for web applications that only loads the page once, and then never reloads. When the user clicks on a link, that link would normally send the user off to a new page, triggering a reload, but in a SPA that link is captured in JavaScript and a router will determine where it is destined, and will render that page as if it functioned like a normal link, but the user never reloaded the page. This makes clicking a link so fast that the user will not notice that any loading took place, since all that loading took place when the user initially loaded the first page.
-This makes the web application feel like a native app, where everything happens in a snap of a finger.
+This makes the web application feel like a native app, where everything happens in the snap of a finger.
 
 A framework for building these web applications was released open source by facebook in mid 2013 \cite{react_release}.
 Developers could now rely on a standardized way to develop their component based UIs for their SPA.
@@ -460,20 +544,16 @@ The data we are collecting are from a temperature and humidity sensor, to survey
 
 Peripheral sensors include a photoresistor to log when lighting is turned on.
 
-All code used for our experiment is found in the attached .zip file.
+All code used for our experiment is found in the appendix.
 
 \section{Cupboard}
 
-The whole plant cultivation box should be seen as one whole unit. There should be space for the plant, LED, fans, electronics, water pump, cables, Arduino Uno, Raspberry Pi 4 and all the sensors.
-The dimensions of the Cupboard is 36 x 28 x 68 cm and has two holes for ventilation. One at the top and one at the bottom.
+The whole plant cultivation box should be seen as one whole unit. There should be space for the plant, LEDs, fans, electronics, water pump, cables, Arduino Uno, Raspberry Pi 4 and all the sensors.
+The dimensions of the Cupboard is 36 x 28 x 68 cm and has two 120mm holes for ventilation. One at the lower back and one at the upper back of the cupboard.
 
 \subsection{Pump system}
-To pump water from the water tank to the plant itself we are going to be using a centrifuge pump. They are usually small and very cheap on aliexpress. We went for something that could run on 5 volts and the RP4 should be able to run it either directly via the GPIO pins or via a relay.
-We chose to use a relay for simplicity and safety reasons. Relays can allow a lot of voltage through, are cheap to come by and can switch using a very low voltage of 3.3 coming from the RP4.
-As mentioned before the RP4 uses scheduling to turn the water pump relay on and off. This in reality means that we every time the scheduler is running a job a GPIO pin will be active high. This active high at around 3.3 volts is what switches the relay and this is what turns on the water pump. The power to the pump that goes through the switch comes from the Arduino Uno 5v rails. This means that in reality we are using the 5volt USB power supply from the RP4 as our mean to power the water pump.
-
-We did some tests and found that in around 4 seconds of having the pump turned powered on gives us  around 80 ml of water to be transferred from the water tank to the plant. This varies depending of if the tube from the pump to the actual plant was empty or not.
-Using this knowledge we can use this as a measurement for how many seconds the scheduler should run the pump. This depends on factors such as how large the plant and pot is.
+To pump water from the water tank to the plant itself we are going to be using a centrifuge pump. They are usually small and very cheap on aliexpress. We went for something that could run on 5 volts and the RP4 should be able to run it through the GPIO pins via a relay driver. Relays can allow a lot of voltage through, are cheap to come by and can switch using a very low voltage of 3.3V coming from the RP4. The pump is controlled by the scheduler of the MCU.
+The voltage supply to the pump that goes through the relay comes from the Arduino Uno 5v rails. This means that in reality we are using the 5volt USB power supply from the RP4 as our mean to power the water pump.
 
 \begin{figure}[h]
     \includegraphics[width=\linewidth]{Pump Diagram_bb.png}
@@ -482,21 +562,23 @@ Using this knowledge we can use this as a measurement for how many seconds the s
 \end{figure}
 
 \subsection{LEDs}
+The LEDs that we are using are of type 5050 SMD. The specifications of the LED are as follows:
 
-We managed to get our hands on some growing LEDs of type 5050 SMD from aliexpress for a very cheap price and we went ahead on using this for our plant cultivator. The specifications of the LED are as follows:
+\begin{itemize}
+    \item IP rating: IP65
+    \item LED Type: SMD 5050
+    \item LED Quantity: 60LED/m 
+    \item Color: Red and Blue (Red:Blue = 3:1)
+    \item LED Wavelength: Red: 660nm; Blue: 450nm
+    \item Voltage: DC 12V
+    \item Power: 8W/m, 36W/5m
+\end{itemize}
 
-IP Rate : IP65
-LED Type: SMD 5050
-LED Quantity: 60LED/m 
-Color: Red and Blue (Red:Blue = 3:1)
-LED Wavelength: Red: 660nm; Blue: 450nm
-Voltage: DC 12V
-Power: 8W/m, 36W/5m
-
-NASA conducted an experiment \cite{nasa_led} with growing plants in space using LEDS. According to their research they used blue and red LEDs. This should mean that the LEDs that we bought have the wavelength and brightness that we are going for to similate what NASA have accomplished in space.
 We are powering the LEDs using a 12 volt powersupply. We feed the power supply through a relay. The relay in turn gets turned on and off by the RP4 using a GPIO pin that is controlled by the scheduler of the MCU.
 
-Here is the diagram of the setup
+\bigskip
+
+Here is the diagram of the setup,
 
 \begin{figure}[h]
     \includegraphics[width=\linewidth]{LED Diagram_bb.png}
@@ -505,17 +587,15 @@ Here is the diagram of the setup
 \end{figure}
 
 \subsection{Fans}
+The fans are two Lian Li ST120 120mm 12V DC fans. They are connected in series such that each runs at 6V.
+The Fans get power from the 12V power supply just as the relay shown in figure 5.1
+That means that when the LEDs turn on, so does the fans.
 
-The fans are two Lian Li ST120 120mm PC fans. They are connected in serial instead of parallel. Because of noise we chose to run them at half capacity, so we thought it was wise to have each fan running at around half capacity.
-The Fans get power from the same relay as shown in figure 5.1
-That means when the LED turns on, so does the fans. We only need cooling when the LEDS are active, so this makes sense.
-
-The fans spin at 800 and 1900 RPM and are rated deliver a maximum airflow of 69.17 CFM. This should be more than suffice for such a small box that the entire unit is.
-
+The fans spin at 800 and 1900 RPM and are rated to deliver a maximum airflow of 69.17 CFM. This should be more than sufficient for our needs.
 
 \section{Arduino UNO}
 The Ardunio UNO is connected to the Pi over a Universal Serial Bus (USB) connection.
-We use 5V USB from the Pi, to power the Arduino. Here we are using the Uno board as the main sensor readout unit (SRU). We have attached temperature/moisture sensor such as the DHT11 and also a photoresistor. All the data that we get from the sensors are sent to the RP4 using serial over USB.
+We use 5V USB from the Pi, to power the Arduino. Here we are using the Uno board as the main sensor readout unit (SRU). We have attached a temperature and humidity sensor, the DHT11 and also a photoresistor. All the data that we get from the sensors are sent to the RP4 over a serial protocol.
 
 \subsection{DHT11}
 The temperature and humidity sensor DHT11, gives a digital signal which is then decoded using the DHT Arduino library \cite{dht}.
@@ -552,10 +632,6 @@ An example of this data is the following,
 Where the first value is the temprature, second the humidity and lastly the photoresistor.
 
 \section{Raspberry Pi 4}
-The Raspberry Pi 4 is a single board computer, which has a ARM CPU.
-It runs Raspbian, a Debian based Linux Distribution.
-This allows us to run all general purpose code on this small portable low powered computer.
-
 The Pi handles all the processing of the data that is delivered from the Arduino, and also handles controlling the lighting and the pump.
 The Pi also is the web server that delivers the web UI.
 
@@ -584,7 +660,7 @@ The UI also lets the user operate the schedules and intervals of both the pump a
 
 For our UI we use JavaScript as the programming language.
 
-This gives us huge flexibility in terms of running things both on client and the server using Next.js.
+This gives us huge flexibility in terms of running code both on the client and the server in a single React component using Next.js.
 
 We use the JavaScript library Chart.js, to render our charts in a usable and presentable fashion.
 
@@ -595,10 +671,17 @@ We use the Fetch API as the HTTP client to fetch data from our python APIs to ou
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \chapter{Data Analysis}
-To record the data for the data analysis we logged 40 minutes of data. 20 minutes of the time the LEDS are on and 20 minutes of the time the LEDS are off. This should tell us the states that the plants are in during the lighting schedule. Using the 20 minute states we should assume that this is how the plant behaves the rest of the time because we are dealing with an isolated unit.
+To record the data for the data analysis we logged 40 minutes of data. About 20 minutes each where the LEDs where turned on and off respectively.
+
+We chose to only look at the temperature and humidity, to observe if the cupboard was functioning as intended.
+We want to observe the effects of running without the LEDs and fans active to see if the humidity and temprature inside the cupboard are stable.
+We also want to observe the effects of then turning on the LEDs and fans.
+We want to have concrete data to test if the hypothesis, that the fans will negate the extra heating caused by the LEDs, and in turn give a stable micro climate inside the cupboard, holds true or not.
+
+\newpage
 
 \section{Temperature}
-Figure \ref{temp_log} shows us the temperature while the LEDS are on and off and as we can see the temperature is not affected by the LEDS at all. This should mean that the airflow is sufficient enough to combat the heat dissipation of the LEDS so that the temperature is stable throughout the light cycle.
+Figure \ref{temp_log} shows us the temperature while the LEDs are on and off and as we can see the temperature is not affected by the LEDs at all. This should mean that the airflow is sufficient enough to combat the heat dissipation of the LEDs so that the temperature is stable throughout the light cycle.
 
 \begin{figure}[h]
     \begin{center}
@@ -608,8 +691,10 @@ Figure \ref{temp_log} shows us the temperature while the LEDS are on and off and
     \end{center}
 \end{figure}
 
+\newpage
+
 \section{Humidity}
-Figure \ref{humidity_log} shows us the humidity while the LEDS are on and off. We can see that the humidity is affected by the state of the light cycle. While the LEDS are off the humidity is higher. This can be explained by the fact that the fans are not active and therefore is not sucking any humid air out of the box. While the LEDS and fans are active the humidity drops somewhat by 3 percent.
+Figure \ref{humidity_log} shows us the humidity while the LEDs and fans are on and off. We can see that the humidity is affected by the state of the light cycle. While the LEDs and fans are off the humidity is higher. This can be explained by the fact that the fans are not active and therefore are not sucking any air out of the cupboard. While the LEDs and fans are active the humidity drops by about 5 percent.
 
 \begin{figure}[h]
     \begin{center}
@@ -619,6 +704,95 @@ Figure \ref{humidity_log} shows us the humidity while the LEDS are on and off. W
     \end{center}
 \end{figure}
 
+\newpage
+
+\section{Water pump system}
+
+We attempted to measure the volume that the water pump system delivered to the plant.
+
+We used a simple scale with an empty container which was about 500ml.
+
+We ran the pump at different intervals and noted if the tube was empty, and what the resulting weight of the water was, and since the weight of water for each gram is about 1 milliliter we do not have to rely on our eyes to measure volume from a more traditional measuring cup.
+
+This is the resulting raw data,
+
+\begin{verbatim}
+time,empty,grams
+2000,0,40
+2000,0,41
+2000,1,27
+2000,0,40
+2000,1,27
+4000,0,89
+4000,0,89
+4000,0,89
+4000,1,77
+8000,0,177
+8000,0,179
+8000,1,168
+8000,1,171
+8000,1,161
+8000,1,169
+8000,0,303
+\end{verbatim}
+
+\newpage
+
+\section{Misc raw data}
+We observed in older logs that the system would occasionally measure an invalid value. It was observed to have happened about the same time as the pump was in an active interval.
+
+an example of such a value is,
+\begin{verbatim}
+{
+    "id": 135,
+    "timestamp": "2020-12-30T15:15:02.724716",
+    "temp": "-999.00",
+    "humid": "-999.00",
+    "light": "1"
+}
+\end{verbatim}
+
+\newpage
+
+In newer logs, this result is not seen but another behaviour was observed also when the pump was in an active interval.
+
+\begin{verbatim}
+{
+    "id": 229,
+    "timestamp": "2021-01-04T14:56:58.626226",
+    "temp": "23.00",
+    "humid": "41.00",
+    "light": "0"
+},
+{
+    "id": 230,
+    "timestamp": "2021-01-04T14:57:00.632333",
+    "temp": "23.00",
+    "humid": "41.00",
+    "light": "29"
+},
+{
+    "id": 231,
+    "timestamp": "2021-01-04T14:57:02.638861",
+    "temp": "19.00",
+    "humid": "34.00",
+    "light": "111"
+},
+{
+    "id": 232,
+    "timestamp": "2021-01-04T14:57:04.644467",
+    "temp": "23.00",
+    "humid": "36.00",
+    "light": "0"
+},
+{
+    "id": 233,
+    "timestamp": "2021-01-04T14:57:06.750502",
+    "temp": "23.00",
+    "humid": "41.00",
+    "light": "0"
+}
+\end{verbatim}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Discussion
@@ -627,19 +801,43 @@ Figure \ref{humidity_log} shows us the humidity while the LEDS are on and off. W
 \chapter{Discussion}
 
 \section{Humidity and Temperature}
-From what we can tell from the data analysis, the LED, fans and box is behaving like we anticipated. We guessed that the temperature would be stable because both fans run at the same time. We considered having one fan sucking air out of the box while the leds were inactive, this would create some air flow during the inactive light cycle. This could have caused the temperature to decrease somewhat while the LEDs were off. We decided to have both fans running while the LEDs are on so that the temperature would be more stable. This seems to have worked. What we were going for was to have a temperature between 15 and 25 degrees celsius and we have reached this temperature.
+From what we can tell from the data analysis, the LED, fans and box are behaving like we anticipated. We guessed that the temperature would be stable because the fans run at the same time as the LEDs are active. We considered having one fan sucking air out of the box while the LEDs were inactive, this would create some air flow during the inactive light cycle. This could have caused the temperature to decrease somewhat while the LEDs were off. We decided to have both fans running while the LEDs are on so that the temperature would be more stable. This seems to have worked. What we were going for was to have a temperature between 20 and 25 degrees celsius and we have reached this temperature.
 
 We can observe that the humidity is relatively low, and that it is expected to follow somewhat the surrounding environment outside the cupboard.
 We only have control over the humidity of the cupboard when we also want lighting at the same time. This could prove to be inconvenient when we would like a slightly higher humidity for a particular species of cultivar or the inverse.
 
+\section{Pump system}
+We ran some preliminary tests on the water volume of the pump, and a reasonable volume for our proof of concept was found to be about 80ml of water for 4 seconds of pump activation. This varies depending on if the tube from the pump to the plant was empty or not.
+
+Pump activation below 3 seconds did not even push water to the plant, where just the tube itself was filled, and then gravity pushed the water back down into the water container.
+
+Pump activation for 8 seconds would deliver about 170ml, and as such the dataset is not linear. There is some curve to the dataset at the beginning where there is an extra cost to get the water into the tube, which is diminishing the further away from the threshold we go.
+
+An outlier of interest is the last measurement, where we ran the pump for 8 seconds, and then had the empty container lower than the pump, such that we were working with rather than against gravity.
+This shows the impact that gravity has on the pump start cost, where we are mostly exclusively fighting gravity.
+
+Pump activation approaching 28 seconds would over fill our test container, which was about 500ml, which caused a puddle of water on our measurement instrument, causing an instrument failure. A decision was then made to cancel the investigation of the water volume of the pump.
+
+Further testing would be beneficial to the project and a curve fitness to a dataset of differing pump activation intervals would be of interest, but was decided to be of lower priority compared to other features of the system.
+
+Other points of note are that the water volume required by the specific plant pot and cultivar used is also a factor which was not investigated in this project.
+
+\section{LEDs}
+The LEDs that we use aim to comply to the experiments that NASA have accomplished in space agriculture, both in brightness and a mixture of red and blue wavelengths.
+
 \section{DHT11 error when operating pump}
 Occasionally when the pump relay opens, the temperature and humidity sensor fails to read.
+The activation of the pump seems to affect the accuracy of the measurement of the DHT11 sensor.
 
 At this point we speculate that some noise from the pump is interfering with the DHT11 sensor, or that the pump draws too much current from the Arduino, such that there is not enough current for the DHT11 sensor, but we do not have any data to back this hypothesis up.
 
-The exact cause is unknown at this point, and will not be investigated further since the operation of the pump rarely exceeds a 10s interval. We will allow the temperature and humidity sensor to read errors for the duration when the pump is running.
+This also seems to interfere with the light sensor, and thus the entire Arduino, suggesting that there may be some design flaw that we are not aware of.
 
-This is filtered out of the data when the data is then displayed in the graphs on the web UI, so it has little to no effect on the end result of the system.
+The exact cause is unknown at this point, and will not be investigated further since the operation of the pump rarely exceeds a 10s interval. We will allow the temperature, humidity and light sensors to read errors for the duration when the pump is running.
+
+The invalid value is filtered out of the data when the data is then displayed in the graphs on the web UI, so it has little to no effect on the end result of the system.
+
+The only thing that affects the system is that there may be an inaccurate mean calculation where data may be misrepresented to the end user, but the system still functions as a proof of concept.
 
 \section{Design}
 We use the simpler single pump per plant water supply system, since we have a single plant.
@@ -668,6 +866,8 @@ In this project, we have shown that it is possible to create a simulated micro c
 We have done research on what makes a plant grow, the essentials of life on earth, and we have used our previous knowledge and skills learned throughout the process of our university degree, to make an experiment, in the form of a practical component, which executes the functions that we intended it to do.
 
 We have collected data and analyzed that data, and can conclude that it is possible to grow a plant in the micro climate that we have presented here.
+
+\newgeometry{top=1.5in, bottom=1.5in, left=0.25in, right=0.25in}
 
 \appendix
 \cleardoublepage\addcontentsline{toc}{chapter}{Appendices}
@@ -1442,7 +1642,7 @@ export default class TextField extends React.Component
 
 \bigskip
 
-\begin{lstlisting}[title={raspberrypi/ui/styles/globals.css}, language=JavaScript]
+\begin{lstlisting}[title={raspberrypi/ui/styles/globals.css}, language=CSS]
 html, body
 {
   padding: 0;
@@ -1467,7 +1667,7 @@ a
 
 \bigskip
 
-\begin{lstlisting}[title={raspberrypi/ui/styles/Home.module.css}, language=JavaScript]
+\begin{lstlisting}[title={raspberrypi/ui/styles/Home.module.css}, language=CSS]
 .container {
   min-height: 100vh;
   padding: 0 0.5rem;
@@ -1600,7 +1800,7 @@ a
 
 \bigskip
 
-\begin{lstlisting}[title={raspberrypi/ui/styles/LineGraph.module.css}, language=JavaScript]
+\begin{lstlisting}[title={raspberrypi/ui/styles/LineGraph.module.css}, language=CSS]
 .container
 {
   height: 300px;
@@ -1620,7 +1820,7 @@ a
 
 \bigskip
 
-\begin{lstlisting}[title={raspberrypi/ui/styles/TextField.module.css}, language=JavaScript]
+\begin{lstlisting}[title={raspberrypi/ui/styles/TextField.module.css}, language=CSS]
 .form
 {
   margin-top: 60px;
@@ -1650,6 +1850,8 @@ a
   border-color: #29b6f6;
 }
 \end{lstlisting}
+
+\newgeometry{top=1.5in, bottom=1.5in, left=1.5in, right=1.5in}
 
 \backmatter
 \cleardoublepage\addcontentsline{toc}{chapter}{Bibliography}
